@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+    
+    <title>Espaderos&Azrudia</title>
+
+    <link class="circle" rel="shortcut icon" href="{% static 'admin/img/ico2.png' %}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="{% static 'admin/css/materialize.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="{% static 'admin/css/style.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
+  </head>
+
+  <body class="grey darken-4">	
+		
+  <form method="post"> {% csrf_token %}
+
+    <div class="section no-pad-bot" id="index-banner">
+      <div class="container">
+        
+        <div class="row center">
+          <div class="col l4 s8 offset-l4 offset-s2"><img class="circle responsive-img" src="{% static 'admin/img/ico2.png' %}"></div>
+        </div>
+      
+      </div>
+
+        <div class="row">
+                    
+          <div class="row col l4 s6 offset-l4">
+            <a class="btn col s12 btn-large waves-effect waves-light lime black-text z-depth-5" href="{% url 'logout' %}" name="action">Cerrar Sesion
+              <i class="material-icons right">send</i>
+            </a>
+            
+          </div>  
+        </div>      
+
+      </div>
+    </div>
+
+  </form>
+
+    <!--  Scripts-->
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="{% static 'admin/js/materialize.js' %}"></script>
+    
+  </body>
+
+</html>
