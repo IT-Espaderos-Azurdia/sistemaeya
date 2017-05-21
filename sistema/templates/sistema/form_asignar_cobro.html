@@ -1,0 +1,54 @@
+{% extends 'sistema/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="row white" style="margin-bottom: 0px;">
+  <div class="row white" >
+    
+    <div class="center blue-grey darken-4 s12 l12 white-text">
+      <h4 >
+        COBROS
+      </h4>  
+    </div>
+    <div class="row col l4 s12">
+      <div class="input-field ">
+          <select>
+            <option value="1">TuArma</option>
+            <option value="2">TuArma</option>
+            <option value="3">TuArma</option>
+          </select>
+        <label>Empresa</label>
+      </div>
+    </div>
+    
+    <div class="row col l4 s12">
+      <div class="input-field ">
+        <select>
+          <option value="1">Antecedentes Ambos</option>
+          <option value="2">Autentica</option>
+          <option value="3">DPI</option>
+        </select>
+        <label>Cobro</label>
+      </div>
+    </div>
+
+    <div class="row col l4 s12">
+      <div class="input-field">
+        <input id="nombre" type="number" step="0.01" class="validate">
+      <label for="nombre">Precio</label>
+    </div>  
+    
+
+  </div>
+
+  <div class="row col l12 s12">
+    <button class=" col l2 s12 btn-large waves-effect waves-light pink white-text z-depth-4 " type="sumit">
+      Guardar
+    </button>
+  </div>
+
+</div>
+
+
+{% endblock content %}

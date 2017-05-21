@@ -13,19 +13,203 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="{% static 'admin/css/materialize.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
     <link href="{% static 'admin/css/style.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
+   
+    
   </head>
 
-  <body style="
-                background-image: url({% static 'admin/img/construccion.jpg' %}); 
-                background-repeat: no-repeat;
-                background-attachment: fixed;
-                background-size: cover;
+  <body class="grey white">
 
-                ">	
+      <nav  class="grey darken-4 " role="navigation" >
+      <div class="nav-wrapper ">    
+        
+        <a class="brand-logo lime-text text-accent-2 row " >
+          <img class="circle responsive-img  col s3 offset-s5 col l2" src="{% static 'admin/img/ico2.png' %}">  
+        </a>
+        <a href="#" data-activates="nav-mobile" class="button-collapse">
+          <i class="material-icons light-blue-text text-lighten-3">
+            menu
+          </i>
+        </a>
+        
+        <ul class="right hide-on-med-and-down" >
+          <li>
+            <a class=" waves-effect light-blue-text text-lighten-3"  href="/sistema/">
+              <i class="material-icons left light-blue-text text-lighten-3">search</i> GESTIONES
+            </a>
+          </li >
+          <li >
+            <a class=" waves-effect light-blue-text text-lighten-3 dropdown-button" data-beloworigin="true" data-activates="menu1">
+              <i class="material-icons left light-blue-text text-lighten-3">mode_edit</i> FORMULARIOS
+            </a>
+          </li>
+          <li >
+            <a class=" waves-effect  light-blue-text text-lighten-3 dropdown-button" data-beloworigin="true" data-activates="menu_reportes">
+              <i class="material-icons left light-blue-text text-lighten-3">description</i>  REPORTES
+            </a>
+          </li>
+          <li >
+            <a class=" waves-effect  lime-text dropdown-button"  data-beloworigin="true" data-activates="menu3">
+              <i class="material-icons left">perm_identity</i> {{ user.get_username | upper}}
+            </a>    
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <ul id="menu_reportes" class="dropdown-content grey darken-4" >
+      <li class="grey darken-4">
+        <a class=" waves-effect light-blue-text text-lighten-3" href="">
+          DETALLE TRAMITES
+        </a>    
+      </li>
+      <li class="grey darken-4">
+        <a class=" waves-effect light-blue-text text-lighten-3" href="">
+          EMPRESAS
+        </a>    
+      </li>
+      <li class="grey darken-4">
+        <a class=" waves-effect light-blue-text text-lighten-3" href="">
+          COBROS
+        </a>    
+      </li>
+    </ul>
+
+    <ul id="menu_reportes2" class="dropdown-content grey darken-4" >
+      <li class="grey darken-4">
+        <a class=" waves-effect light-blue-text text-lighten-3" href="">
+          DETALLE TRAMITES
+        </a>    
+      </li>
+      <li class="grey darken-4">
+        <a class=" waves-effect light-blue-text text-lighten-3" href="">
+          EMPRESAS
+        </a>    
+      </li>
+      <li class="grey darken-4">
+        <a class=" waves-effect light-blue-text text-lighten-3" href="">
+          COBROS
+        </a>    
+      </li>
+    </ul>
+
+    <ul id="menu3" class="dropdown-content grey darken-4" >
+      <li class="grey darken-4">
+        <a class=" waves-effect red-text" href="{% url 'logout' %}">
+          <i class="material-icons left red-text">power_settings_new</i> SALIR 
+        </a>    
+      </li>
+    </ul>
+
+    <ul id="menu1" class="dropdown-content grey darken-4" >
+      <li class="grey darken-4">
+        <a class=" waves-effect  light-blue-text text-lighten-3 " href="/tramites/" >
+          TRAMITES
+        </a>
+      </li>
+      <li class="grey darken-4">
+        <a class=" waves-effect  light-blue-text text-lighten-3 " href="/tramitesvarios/">
+          TRAMITES VARIOS
+        </a>
+      </li>
+      <li class="grey darken-4">
+        <a class=" waves-effect  light-blue-text text-lighten-3 " href="/form_empresa/" >
+          EMPRESA
+        </a>
+      </li>
+      <li class="grey darken-4">
+        <a class=" waves-effect  light-blue-text text-lighten-3 "  href="/form_cobro/">
+          COBROS 
+         </a>    
+      </li>
+      <li class="grey darken-4">
+        <a class=" waves-effect  light-blue-text text-lighten-3 "  href="/form_asignar_cobro/">
+          ASIGNAR COBRO
+        </a>
+      </li>
+      
+    </ul>
+
+<ul id="menu2" class="dropdown-content grey darken-4" >
+      <li class="grey darken-4">
+        <a class=" waves-effect  light-blue-text text-lighten-3 " href="/tramites/" >
+          TRAMITES
+        </a>
+      </li>
+      <li class="grey darken-4">
+        <a class=" waves-effect  light-blue-text text-lighten-3 " href="/tramitesvarios/">
+          TRAMITES VARIOS
+        </a>
+      </li>
+      <li class="grey darken-4">
+        <a class=" waves-effect  light-blue-text text-lighten-3 " href="/form_empresa/">
+          EMPRESA
+        </a>
+      </li>
+      <li class="grey darken-4">
+        <a class=" waves-effect  light-blue-text text-lighten-3 "  href="/form_cobro/">
+          COBROS
+        </a>
+      </li>
+      <li class="grey darken-4">
+        <a class=" waves-effect  light-blue-text text-lighten-3 "  href="/form_asignar_cobro/">
+          ASIGNAR COBROS
+         </a>    
+      </li>
+    </ul>
+
+    <div>
+      <ul id="nav-mobile" class="side-nav grey darken-4">
+        <li>
+          <a class="waves-effect waves-light lime-text ">
+            <i class="material-icons left lime-text">perm_identity</i> {{ user.get_username | upper}} 
+          </a>
+        </li>
+        <li>
+          <a class="waves-effect waves-light light-blue-text text-lighten-3 " href="/sistema/">
+            <i class="material-icons left light-blue-text text-lighten-3">search</i> GESTIONES
+          </a>
+        </li>
+        <li>
+          <a class="waves-effect waves-light light-blue-text text-lighten-3 dropdown-button "  data-activates="menu2" href="#">
+            <i class="material-icons rigth light-blue-text text-lighten-3">mode_edit</i> FORMULARIOS
+          </a>
+        </li>
+        <li>
+          <a class="waves-effect waves-light light-blue-text text-lighten-3 dropdown-button" data-beloworigin="true" data-activates="menu_reportes2">
+            <i class="material-icons left light-blue-text text-lighten-3">description</i> REPORTES
+          </a>
+        </li>
+        <li>
+          <a class="waves-effect waves-light red-text" href="{% url 'logout' %}">
+            <i class="material-icons left red-text">power_settings_new</i> SALIR 
+          </a>  
+        </li>         
+      </ul>
+    </div>
 		
+
+
+
+
+    {% block content %}
+    
+    {% endblock %}
+
+<!-- 
+     <footer class="footer-copyright black" >
+        <div class="container">
+          <a> &copy &reg Espaderos &  Azurdia - Liciencia MIT </a>
+        </div>
+        
+          Todos los derechos reservados "Mikhail Chopen", Powered by http:/Serialize.com Licencia MIT
+     
+    </footer>   -->
+
     <!--  Scripts-->
-    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="{% static 'admin/js/materialize.js' %}"></script>
+    <script src="{% static 'admin/js/initialization_custum.js' %}"></script>
+    
     
   </body>
 </html>
