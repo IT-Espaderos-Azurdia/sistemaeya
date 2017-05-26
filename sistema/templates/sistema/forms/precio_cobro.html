@@ -1,0 +1,101 @@
+{% extends 'sistema/base/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+<form method="post">
+  {% csrf_token %}
+<div class="row white" style="margin-bottom: 0px;">
+  <div class="row white" >
+    
+    <div class="center blue-grey darken-4 s12 l12 white-text">
+      <h4 >
+        COBROS
+      </h4>  
+    </div>
+
+    <div class="row col l4 s12">
+      <div class="input-field ">
+        {{ form.empresa }}
+        <label>{{form.empresa.label}}</label>
+      </div>
+    </div>
+    
+    <div class="row col l4 s12">
+      <div class="input-field ">
+        {{ form.cobro }}
+        <label>{{form.cobro.label}}</label>
+      </div>
+    </div>
+
+    <div class="row col l4 s12">
+      <div class="input-field">
+        {{form.precio}}
+        <label for="{{form.precio.id}}">{{form.precio.label}}</label>
+      </div>  
+    </div>
+    
+
+  </div>
+
+  <div class="row col l12 s12">
+    <button class=" col l2 s12 btn-large waves-effect waves-light pink white-text z-depth-4 " type="sumit">
+      Guardar
+    </button>
+  </div>
+
+  </div>
+</div>
+
+
+
+</form>
+{% if listado %}
+
+<div class="row white col s12 l12 " >
+  <div class="center blue-grey darken-3 s12 l12 white-text">
+    <h4 >
+      LISTADO DE COBROS A EMPRESAS
+    </h4>  
+  </div>
+
+  <div class="row col s12 l10 offset-l1">
+    <table class="highlight responsive-table" id="tabla">
+        <thead>
+          <tr>
+              <th>Nombre Empresa</th>
+              <th>Nombre Cobro</th>
+              <th>Precio</th>
+              <th>Editar</th>
+              <th>Eliminar</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for CobroEmpresa in listado %}
+          <tr>
+            <td>{{ CobroEmpresa.empresa }}</td>
+            <td>{{ CobroEmpresa.cobro }}</td>
+            <td>{{ CobroEmpresa.precio }}</td>
+            <td>
+              <a class="btn col l6 s8 waves-effect waves-light orange black-text z-depth-1" href='/editar_precio_cobro/{{CobroEmpresa.id}}/'>
+                <i class="material-icons  black-text">mode_edit</i>
+              </a><br>
+            </td>
+            <td>
+              <a class="btn col l6 s8 waves-effect waves-light red black-text z-depth-1" href='/eliminar_precio_cobro/{{CobroEmpresa.id}}/'>
+                <i class="material-icons  black-text">delete</i>
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+         
+        </tbody>
+        
+      </table>
+  </div>
+
+</div>
+
+{% endif %}
+
+
+{% endblock content %}

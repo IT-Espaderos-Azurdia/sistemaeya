@@ -111,3 +111,24 @@ class DjangoSession(models.Model):
         managed = False
         db_table = 'django_session'
 
+class Cobro(models.Model):
+    nombre = models.CharField(max_length=100)
+
+    def __str__(self):
+        return '{}'.format(self.nombre)
+
+class Empresa(models.Model):
+    nombre = models.CharField(max_length=100)
+    telefono = models.PositiveIntegerField()
+    correo = models.EmailField(max_length=254)
+
+    def __str__(self):
+        return '{}'.format(self.nombre)
+
+class CobroEmpresa(models.Model):
+    precio = models.PositiveIntegerField()
+    empresa = models.ForeignKey(Empresa,null=False,blank=False,on_delete=models.CASCADE)
+    cobro = models.ForeignKey(Cobro,null=False,blank=False,on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('empresa','cobro',)
