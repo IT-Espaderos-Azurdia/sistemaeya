@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
-from sistema.forms import CobroForm, EmpresaForm, CobroEmpresaForm
-from sistema.models import Cobro, Empresa, CobroEmpresa
-
+from sistema.forms import CobroForm, EmpresaForm, CobroEmpresaForm, ExpedienteForm
+from sistema.models import Cobro, Empresa, CobroEmpresa, Expediente
+import datetime
 
 def home(request):
 
@@ -14,14 +14,34 @@ def login(request):
 	return render(request,template)
 
 def sistema(request):
-
+	d = datetime.datetime.today()
 	template = "sistema/sistema_home.html"
-	return render(request,template)
+	return render(request,template,{'month':d})
 
 def tramites(request):
 
 	template = "sistema/tramites.html"
 	return render(request,template)
+
+# --------------------------------------------------------------------
+# ------------------ FUNCIONES CRUD EXPEDIENTE -----------------------
+# --------------------------------------------------------------------
+
+# Funcion agregar una expediente
+def form_expediente(request):
+	template = "sistema/forms/expediente.html"
+	if request.method == 'POST':
+		form = ExpedienteForm(request.POST)
+		if form.is_valid():
+			form.save()
+		return redirect('form_empresa')
+	else:
+		form = ExpedienteForm()
+	list_empresa = Empresa.objects.all()
+	key_Form = False
+	context = {'form':form,'listado': list_empresa,'key_Form':key_Form}		
+	return render(request,template,context)	
+
 
 # --------------------------------------------------------------------
 # -------------------- FUNCIONES CRUD EMPRESA ------------------------
@@ -37,8 +57,7 @@ def form_empresa(request):
 		return redirect('form_empresa')
 	else:
 		form = EmpresaForm()
-	list_empresa = Empresa.objects.all()
-	context = {'form':form,'listado': list_empresa}		
+	context = {'form':form}		
 	return render(request,template,context)	
 
 # Funcion actualizar empresa
@@ -145,7 +164,6 @@ def eliminar_precio_cobro(request,id_cobro_precio):
 		return render(request,template,context)
 	else:
 		return redirect('form_precio_cobro')
-
 
 
 # --------------------------------------------------------------------

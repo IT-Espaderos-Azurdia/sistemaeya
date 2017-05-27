@@ -4,13 +4,15 @@ from . import views
 from django.contrib import admin
 from django.contrib.auth.views import login, logout_then_login, password_reset, password_reset_done, \
 	password_reset_confirm, password_reset_complete
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
 
 	url(r'^$', views.home, name='home'),
 	url(r'^sistema/$', login_required(views.sistema), name='sistema'),
-	url(r'^tramites/$', login_required(views.tramites), name='tramites'),
+
+	url(r'^form_expediente/$', login_required(views.form_expediente), name='form_expediente'),
 
 	url(r'^form_precio_cobro/$', login_required(views.form_precio_cobro), name='form_precio_cobro'),
 	url(r'^editar_precio_cobro/(?P<id_cobro_precio>\d+)/$', login_required(views.update_precio_cobro), name='update_precio_cobro'),
@@ -32,3 +34,6 @@ urlpatterns = [
 	url(r'^reset/done$', password_reset_complete, {'template_name':'sistema/passwordcambiado.html'}, name='password_reset_complete'),
 ]
 
+if settings.DEBUG:
+	urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_URL)
+	urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_URL)

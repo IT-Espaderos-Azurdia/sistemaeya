@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from django.db import models
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=80)
@@ -121,6 +121,7 @@ class Empresa(models.Model):
     nombre = models.CharField(max_length=100)
     telefono = models.PositiveIntegerField()
     correo = models.EmailField(max_length=254)
+    password = models.CharField(max_length=8,null=True,blank=True,unique=True)
 
     def __str__(self):
         return '{}'.format(self.nombre)
@@ -132,3 +133,37 @@ class CobroEmpresa(models.Model):
 
     class Meta:
         unique_together = ('empresa','cobro',)
+
+class OperacionMes(models.Model):
+    empresa = models.ForeignKey(Empresa,null=False,blank=False,on_delete=models.CASCADE)
+    mes = models.PositiveIntegerField(null=False,blank=False,validators=[MinValueValidator(1),MaxValueValidator(12)])
+    anio = models.PositiveIntegerField(null=False,blank=False,validators=[MinValueValidator(2016),MaxValueValidator(2300)])
+
+    class Meta:
+        unique_together =('mes','anio',)
+
+class Abono(models.Model):
+    monto = models.PositiveIntegerField(null=False,blank=False)
+    fecha = models.DateField(null=False,blank=False)
+    tipo = models.CharField(null=False,blank=False,max_length=100)
+    recibio = models.CharField(null=False,blank=False,max_length=100)
+    codigo = models.CharField(null=False,blank=False,max_length=100)
+    fechadeposito = models.DateField(null=True,blank=True)
+    codigodeposito = models.CharField(null=False,blank=False,max_length=100)
+    operacionmes = models.ForeignKey(OperacionMes,null=False,blank=False,on_delete=models.CASCADE)
+
+class Expediente(models.Model):
+    cliente = models.CharField(null=True,blank=True,max_length=100)
+    operacionmes = models.ForeignKey(OperacionMes,null=True,blank=True,on_delete=models.CASCADE)
+    cobro = models.ManyToManyField(Cobro)
+    fecha_ingreso_oficina = models.DateField(null=False,blank=False)
+    fecha_ingreso_digecam = models.DateField(null=True,blank=True)
+    fecha_cita = models.DateField(null=True,blank=True)
+    fecha_pago = models.DateField(null=True,blank=True)
+    fecha_entrega = models.DateField(null=True,blank=True)
+    recibio = models.CharField(null=True,blank=True,max_length=100)
+    entrego = models.CharField(null=True,blank=True,max_length=50)
+    tenencias = models.PositiveIntegerField(null=False,blank=False)
+    estatus = models.CharField(null=False,blank=False,max_length=6)
+    descripcion_estatus = models.CharField(null=True,blank=True,max_length=200)
+    docfile = models.FileField(upload_to='archivos/%Y/%m/%d',null=True,blank=True)

@@ -1,0 +1,132 @@
+{% extends 'sistema/base/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="row white" style="margin-bottom: 0px;">
+  <form method="post">
+    {% csrf_token %}
+    <div class="row white" >
+      
+      <div class="center blue-grey darken-3 s12 l12 white-text">
+        <h4 >
+          EXPEDIENTE
+        </h4>  
+      </div>
+        
+      
+      <div class="row col l6 s12">
+        <ul id="id_cobro">
+          {% for check in form.cobro %}
+            <li class="row col l6 s12">
+              {{ check.tag }}  
+              <label for="id_cobro_{{ forloop.counter0}}" >{{check.choice_label}}</label>          
+            </li>
+          {% endfor %}
+        </ul>  
+      </div>
+
+      <div class="row col l6 s12">
+        
+        <div class="row input-field">
+          <select id="empresa">
+            {% for empresa in listado %}
+              <option value="{{empresa.id}}">{{empresa.nombre}}</option>
+            {% endfor %}
+          </select>
+          <label>Sleccionar Empresa</label>
+        </div>
+
+        <div class="row ">
+          <div class="input-field">
+            {{form.cliente}}
+            <label for="{{form.cliente.id}}">{{form.cliente.label}}</label>
+          </div>          
+        </div>
+
+        <div class="row col l6 s12">
+          <div class="input-field">
+            {{form.tenencias}}
+            <label for="{{form.tenencias.id}}">{{form.tenencias.label}}</label>
+          </div>          
+        </div>
+
+        <div class="row col l6 s12">
+          <div class="input-field">
+            {{form.estatus}}
+            <label for="{{form.estatus.id}}">{{form.estatus.label}}</label>
+          </div>          
+        </div>
+
+        <div class="row col l6 s12">
+          <label >{{form.fecha_ingreso_oficina.label}}</label>
+          {{form.fecha_ingreso_oficina}}            
+        </div>
+
+        <div class="row col l6 s12">
+          <label >{{form.fecha_ingreso_digecam.label}}</label>
+          {{form.fecha_ingreso_digecam}}            
+        </div>
+
+        {% if key_Form %}
+        <div class="row col l6 s12">
+          <label >{{form.fecha_cita.label}}</label>
+          {{form.fecha_cita}}            
+        </div>
+
+        <div class="row col l6 s12">
+          <label >{{form.fecha_pago.label}}</label>
+          {{form.fecha_pago}}            
+        </div>
+
+        <div class="row col l6 s12 ">
+          <div class="input-field">
+            {{form.entrego}}
+            <label for="{{form.entrego.id}}">{{form.entrego.label}}</label>
+          </div>          
+        </div>
+
+        <div class="row col l6 s12">
+          <label >{{form.fecha_entrega.label}}</label>
+          {{form.fecha_entrega}}            
+        </div>
+        
+        <div class="row col l12 s12 ">
+          <div class="input-field">
+            {{form.descripcion_estatus}}
+            <label for="{{form.descripcion_estatus.id}}">{{form.descripcion_estatus.label}}</label>
+          </div>          
+        </div>
+
+        <div class="row col l12 s12 ">
+          <div class="file-field input-field">
+            <div class="btn green">
+              <span>Archivo</span>
+              {{ form.docfile}}
+            </div>
+            <div class="file-path-wrapper">
+              <input class="file-path validate" type="text">
+            </div>
+          </div>         
+        </div>
+
+        {% endif %}
+
+        
+
+        <div class="row col l12 s12">
+          <button class=" col l3  s12 offset-l9 btn-large waves-effect waves-light pink white-text z-depth-4 " type="sumit">
+            Guardar
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </form>
+
+</div>
+
+
+{% endblock content %}
