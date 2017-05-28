@@ -42,12 +42,18 @@
         </thead>
 
         <tbody>
+        {% for expe in listado%}
           <tr>
-            <td>Carlos Eduardo Sandoval lopez</td>
-            <td>TuArma</td>
-            <td>02-6-2017</td>
-            <td>Problema</td>
-            <td>Q 450.00</td>
+            <td>{{expe.cliente}}</td>
+            <td>{{expe.operacionmes.empresa}}</td>
+            <td>{{expe.fecha_ingreso_oficina}}</td>
+            <td>{{expe.estatus}} {{expe.id}} </td>
+            <td>
+            {% for c in expe.cobro.all %}
+              {{c}}, 
+            {% endfor %}
+
+            </td>
             <td>
               <a class="btn col l6 s8 waves-effect waves-light lime black-text z-depth-1" href='#modal1'>
                 <i class="material-icons black-text">search</i>
@@ -59,210 +65,7 @@
               </a>
             </td>
           </tr>
-          <tr>
-            <td>Carlos Eduardo Sandoval lopez</td>
-            <td>TuArma</td>
-            <td>02-6-2017</td>
-            <td>Ok</td>
-            <td>Q 450.00</td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light lime black-text z-depth-1" href='#modal2'>
-                <i class="material-icons black-text">search</i>
-              </a><br>
-            </td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light red black-text z-depth-1" href='#'>
-                <i class="material-icons  black-text">mode_edit</i>
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>Carlos Eduardo Sandoval lopez</td>
-            <td>TuArma</td>
-            <td>02-6-2017</td>
-            <td>Ok</td>
-            <td>Q 450.00</td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light lime black-text z-depth-1" href='#modal2'>
-                <i class="material-icons black-text">search</i>
-              </a><br>
-            </td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light red black-text z-depth-1" href='#'>
-                <i class="material-icons  black-text">mode_edit</i>
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>Carlos Eduardo Sandoval lopez</td>
-            <td>TuArma</td>
-            <td>02-6-2017</td>
-            <td>Ok</td>
-            <td>Q 450.00</td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light lime black-text z-depth-1" href='#modal2'>
-                <i class="material-icons black-text">search</i>
-              </a><br>
-            </td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light red black-text z-depth-1" href='#'>
-                <i class="material-icons  black-text">mode_edit</i>
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>Carlos Eduardo Sandoval lopez</td>
-            <td>TuArma</td>
-            <td>02-6-2017</td>
-            <td>Ok</td>
-            <td>Q 450.00</td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light lime black-text z-depth-1" href='#modal2'>
-                <i class="material-icons black-text">search</i>
-              </a><br>
-            </td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light red black-text z-depth-1" href='#'>
-                <i class="material-icons  black-text">mode_edit</i>
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>Carlos Eduardo Sandoval lopez</td>
-            <td>TuArma</td>
-            <td>02-6-2017</td>
-            <td>Ok</td>
-            <td>Q 450.00</td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light lime black-text z-depth-1" href='#modal2'>
-                <i class="material-icons black-text">search</i>
-              </a><br>
-            </td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light red black-text z-depth-1" href='#'>
-                <i class="material-icons  black-text">mode_edit</i>
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>Carlos Eduardo Sandoval lopez</td>
-            <td>TuArma</td>
-            <td>02-6-2017</td>
-            <td>Ok</td>
-            <td>Q 450.00</td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light lime black-text z-depth-1" href='#modal2'>
-                <i class="material-icons black-text">search</i>
-              </a><br>
-            </td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light red black-text z-depth-1" href='#'>
-                <i class="material-icons  black-text">mode_edit</i>
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>Carlos Eduardo Sandoval lopez</td>
-            <td>TuArma</td>
-            <td>02-6-2017</td>
-            <td>Ok</td>
-            <td>Q 450.00</td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light lime black-text z-depth-1" href='#modal2'>
-                <i class="material-icons black-text">search</i>
-              </a><br>
-            </td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light red black-text z-depth-1" href='#'>
-                <i class="material-icons  black-text">mode_edit</i>
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>Carlos Eduardo Sandoval lopez</td>
-            <td>TuArma</td>
-            <td>02-6-2017</td>
-            <td>Ok</td>
-            <td>Q 450.00</td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light lime black-text z-depth-1" href='#modal2'>
-                <i class="material-icons black-text">search</i>
-              </a><br>
-            </td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light red black-text z-depth-1" href='#'>
-                <i class="material-icons  black-text">mode_edit</i>
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>Carlos Eduardo Sandoval lopez</td>
-            <td>TuArma</td>
-            <td>02-6-2017</td>
-            <td>Ok</td>
-            <td>Q 450.00</td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light lime black-text z-depth-1" href='#modal2'>
-                <i class="material-icons black-text">search</i>
-              </a><br>
-            </td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light red black-text z-depth-1" href='#'>
-                <i class="material-icons  black-text">mode_edit</i>
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>Carlos Eduardo Sandoval lopez</td>
-            <td>TuArma</td>
-            <td>02-6-2017</td>
-            <td>Ok</td>
-            <td>Q 450.00</td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light lime black-text z-depth-1" href='#modal2'>
-                <i class="material-icons black-text">search</i>
-              </a><br>
-            </td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light red black-text z-depth-1" href='#'>
-                <i class="material-icons  black-text">mode_edit</i>
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>Carlos Eduardo Sandoval lopez</td>
-            <td>TuArma</td>
-            <td>02-6-2017</td>
-            <td>Ok</td>
-            <td>Q 450.00</td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light lime black-text z-depth-1" href='#modal2'>
-                <i class="material-icons black-text">search</i>
-              </a><br>
-            </td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light red black-text z-depth-1" href='#'>
-                <i class="material-icons  black-text">mode_edit</i>
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td>Carlos Eduardo Sandoval lopez</td>
-            <td>TuArma</td>
-            <td>02-6-2017</td>
-            <td>Ok</td>
-            <td>Q 450.00</td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light lime black-text z-depth-1" href='#modal2'>
-                <i class="material-icons black-text">search</i>
-              </a><br>
-            </td>
-            <td>
-              <a class="btn col s6 waves-effect waves-light red black-text z-depth-1" href='#'>
-                <i class="material-icons  black-text">mode_edit</i>
-              </a>
-            </td>
-          </tr>
+          {% endfor %}
         </tbody>
       </table>
       <br>

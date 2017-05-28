@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from sistema.forms import CobroForm, EmpresaForm, CobroEmpresaForm, ExpedienteForm
-from sistema.models import Cobro, Empresa, CobroEmpresa, Expediente
+from sistema.models import Cobro, Empresa, CobroEmpresa, Expediente, OperacionMes
 import datetime
 
 def home(request):
@@ -15,8 +15,10 @@ def login(request):
 
 def sistema(request):
 	d = datetime.datetime.today()
+	listado = Expediente.objects.all()
+
 	template = "sistema/sistema_home.html"
-	return render(request,template,{'month':d})
+	return render(request,template,{'month':d,'listado':listado})
 
 def tramites(request):
 
@@ -33,15 +35,39 @@ def form_expediente(request):
 	if request.method == 'POST':
 		form = ExpedienteForm(request.POST)
 		if form.is_valid():
-			form.save()
-		return redirect('form_empresa')
+			empresa = request.POST.get("empresa","")
+			mes = datetime.datetime.today().month
+			anio = datetime.datetime.today().year
+			if not OperacionMes.objects.all().filter(empresa=empresa,mes=mes,anio=anio).exists():
+				OperacionMes.objects.create(empresa=Empresa.objects.get(id=empresa),mes=mes,anio=anio)
+			expediente = form.save(commit=True)
+			expediente.operacionmes = OperacionMes.objects.get(empresa=empresa,mes=mes,anio=anio)
+			cobros = form.cleaned_data['cobro']
+			for c in cobros:
+				expediente.cobro.add((Cobro.objects.get(id=c.id)))
+			expediente.save()
+		return redirect('form_expediente')
 	else:
 		form = ExpedienteForm()
 	list_empresa = Empresa.objects.all()
+	Key_empresa = True
 	key_Form = False
-	context = {'form':form,'listado': list_empresa,'key_Form':key_Form}		
+	context = {'form':form,'listado': list_empresa,'key_Form':key_Form,'Key_empresa':Key_empresa}		
 	return render(request,template,context)	
 
+# Funcion actualizar empresa
+def update_expediente(request,id_expediente):
+	expediente = Expediente.objects.get(id=id_expediente)
+	if request.method == 'GET':
+		form = ExpedienteForm(instance=expediente)
+	else:
+		form = ExpedienteForm(request.POST,instance=expediente)
+		if form.is_valid():
+			form.save()
+		return redirect('form_expediente')
+	template = "sistema/forms/expediente.html"
+	context = {'form':form,'key_Form':True,'Key_empresa':False}
+	return render(request,template,context)
 
 # --------------------------------------------------------------------
 # -------------------- FUNCIONES CRUD EMPRESA ------------------------
@@ -175,4 +201,9 @@ def error_404(request):
 	template = "sistema/errores/404.html"
 	return render(request,template)
 
+
+
+# --------------------------------------------------------------------
+# ---------------------- FUNCIONES NO RENDER  ------------------------
+# --------------------------------------------------------------------
 

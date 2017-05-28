@@ -13,6 +13,7 @@ urlpatterns = [
 	url(r'^sistema/$', login_required(views.sistema), name='sistema'),
 
 	url(r'^form_expediente/$', login_required(views.form_expediente), name='form_expediente'),
+	url(r'^editar_expediente/(?P<id_expediente>\d+)/$', login_required(views.update_expediente), name='update_expediente'),
 
 	url(r'^form_precio_cobro/$', login_required(views.form_precio_cobro), name='form_precio_cobro'),
 	url(r'^editar_precio_cobro/(?P<id_cobro_precio>\d+)/$', login_required(views.update_precio_cobro), name='update_precio_cobro'),

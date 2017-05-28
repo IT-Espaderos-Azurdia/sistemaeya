@@ -40,11 +40,11 @@ class ExpedienteForm(forms.ModelForm):
 
 		widgets = {
 			'cobro': forms.CheckboxSelectMultiple(),
-		    'fecha_ingreso_oficina': forms.DateInput(format='%d/%m/%Y',attrs={'type':'date'}),
-		    'fecha_ingreso_digecam': forms.DateInput(format='%d/%m/%Y',attrs={'type':'date'}),
-		    'fecha_cita': forms.DateInput(format='%d/%m/%Y',attrs={'type':'date'}),
-		    'fecha_pago': forms.DateInput(format='%d/%m/%Y',attrs={'type':'date'}),
-		    'fecha_entrega': forms.DateInput(format='%d/%m/%Y',attrs={'type':'date'}),
+		    'fecha_ingreso_oficina': forms.DateInput(format='%Y-%m-%d',attrs={'type':'date'}),
+		    'fecha_ingreso_digecam': forms.DateInput(format='%Y-%m-%d',attrs={'type':'date'}),
+		    'fecha_cita': forms.DateInput(format='%Y-%m-%d',attrs={'type':'date'}),
+		    'fecha_pago': forms.DateInput(format='%Y-%m-%d',attrs={'type':'date'}),
+		    'fecha_entrega': forms.DateInput(format='%Y-%m-%d',attrs={'type':'date'}),
 		    'recibio': forms.TextInput(attrs={'class':'validate'}),
 		    'entrego': forms.TextInput(attrs={'class':'validate'}),
 		    'tenencias': forms.NumberInput(attrs={'class':'validate'}),
@@ -80,11 +80,11 @@ class PagoForm(forms.ModelForm):
 
 		widgets = {
 			'monto': forms.NumberInput(attrs={'class':'validate'}),
-			'fecha': forms.DateInput(format='%d/%m/%Y',attrs={'type':'date'}),
+			'fecha': forms.DateInput(format='%Y-%m-%d',attrs={'type':'date'}),
 			'tipo' : forms.TextInput(attrs={'class':'validate'}),
 			'recibio': forms.TextInput(attrs={'class':'validate'}),
 			'codigo': forms.TextInput(attrs={'class':'validate'}),
-			'fechadeposito': forms.DateInput(format='%d/%m/%Y',attrs={'type':'date'}),
+			'fechadeposito': forms.DateInput(format='%Y-%m-%d',attrs={'type':'date'}),
 			'codigodeposito': forms.TextInput(attrs={'class':'validate'}),
 		}
 

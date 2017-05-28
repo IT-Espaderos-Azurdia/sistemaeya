@@ -140,7 +140,7 @@ class OperacionMes(models.Model):
     anio = models.PositiveIntegerField(null=False,blank=False,validators=[MinValueValidator(2016),MaxValueValidator(2300)])
 
     class Meta:
-        unique_together =('mes','anio',)
+        unique_together =('empresa','mes','anio',)
 
 class Abono(models.Model):
     monto = models.PositiveIntegerField(null=False,blank=False)
@@ -155,7 +155,7 @@ class Abono(models.Model):
 class Expediente(models.Model):
     cliente = models.CharField(null=True,blank=True,max_length=100)
     operacionmes = models.ForeignKey(OperacionMes,null=True,blank=True,on_delete=models.CASCADE)
-    cobro = models.ManyToManyField(Cobro)
+    cobro = models.ManyToManyField(Cobro,blank=True)
     fecha_ingreso_oficina = models.DateField(null=False,blank=False)
     fecha_ingreso_digecam = models.DateField(null=True,blank=True)
     fecha_cita = models.DateField(null=True,blank=True)

@@ -24,18 +24,22 @@
             </li>
           {% endfor %}
         </ul>  
+        
+        
       </div>
 
       <div class="row col l6 s12">
         
+        {% if Key_empresa %}
         <div class="row input-field">
-          <select id="empresa">
+          <select id="empresa" name="empresa">
             {% for empresa in listado %}
               <option value="{{empresa.id}}">{{empresa.nombre}}</option>
             {% endfor %}
           </select>
           <label>Sleccionar Empresa</label>
         </div>
+        {% endif %}
 
         <div class="row ">
           <div class="input-field">
