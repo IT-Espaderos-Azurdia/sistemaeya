@@ -1,0 +1,117 @@
+{% extends 'sistema/base/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+<form method="post">
+    {% csrf_token %}
+  <div class="row white" style="margin-bottom: 0px;">
+    
+    <div class="center blue-grey darken-3 s12 l12 white-text">
+      <h4 >
+        REGISTRO DE PAGOS
+      </h4>  
+    </div>
+
+    <div class="row white col s12 l10 offset-l1 " >
+      
+      
+        <div class="row input-field col s12 l4">
+          <select id="empresa" name="empresa">
+            {% for empresa in empresas %}
+              <option value="{{empresa.id}}">{{empresa.nombre}}</option>
+            {% endfor %}
+          </select>
+          <label>Sleccionar Empresa</label>
+        </div>
+        
+
+        <div class=" row col s12 l4 ">
+          <label for="fecha_operacion">Mes/Año correspondiente a operacion</label>
+          <input id="fecha_operacion" name="fecha_operacion" type="month" class="validate col s12 l12 " required="required">
+        </div>
+        
+
+
+      <div class=" row col s12 l4 ">
+        <div class="row">
+          <div class="input-field">
+            {{ form.codigo }}
+            <label for="{{form.codigo.id}}">{{ form.codigo.label }}</label>
+          </div>  
+        </div>
+      </div>
+
+      <div class=" row col s12 l4 ">
+        <div class="row">
+          <div class="input-field">
+            {{ form.recibio }}
+            <label for="{{form.recibio.id}}">{{ form.recibio.label }}</label>
+          </div>  
+        </div>
+      </div>
+
+      <div class="row col l4 s12">
+          <label >{{form.fecha.label}}</label>
+          {{form.fecha}}            
+        </div>
+
+      <div class=" row col s12 l4 ">
+        <div class="row">
+          <div class="input-field">
+            {{ form.banco }}
+            <label for="{{form.banco.id}}">{{ form.banco.label }}</label>
+          </div>  
+        </div>
+      </div>
+
+      <div class=" row col s12 l6 ">
+        <div class="row">
+          <div class="input-field">
+            {{ form.monto }}
+            <label for="{{form.monto.id}}">{{ form.monto.label }}</label>
+          </div>  
+        </div>
+      </div>
+
+      <div class=" row col s12 l6 ">
+        <div class="row">
+          <div class="input-field">
+            {{ form.tipo }}
+            <label for="{{form.tipo.id}}">{{ form.tipo.label }}</label>
+          </div>  
+        </div>
+      </div>
+
+      <div class="divider col s12 l12"><label>* Los campos de </label></div> 
+
+      <div class="col s12 l12"><label>* Llenar los siguientes campos unicamente si ya realizo la transferenica del pago </label></div> 
+
+      <div class=" row col s12 l6 ">
+        <div class="row">
+          <div class="input-field">
+            {{ form.codigodeposito }}
+            <label for="{{form.codigodeposito.id}}">{{ form.codigodeposito.label }}</label>
+          </div>  
+        </div>
+      </div>
+      
+      <div class="row col l6 s12">
+        <label >{{form.fechadeposito.label}}</label>
+        {{form.fechadeposito}}            
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row col l12 s12">
+        <button class=" col l3 s12 btn-large waves-effect waves-light pink white-text z-depth-4 " type="sumit">
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+
+
+{% endblock content %}

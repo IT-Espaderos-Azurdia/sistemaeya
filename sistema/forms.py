@@ -66,22 +66,25 @@ class PagoForm(forms.ModelForm):
 			'codigo',
 			'fechadeposito',
 			'codigodeposito',
+			'banco',
 		]
 
 		labels = {
 			'monto': 'Monto recibido',
 			'fecha': 'Fecha recibido',
-			'tipo': 'Forma de abono',
+			'tipo': 'Forma de Pago',
 			'recibio': 'Quien recibio',
-			'codigo': 'Codigo abono',
+			'codigo': 'Codigo Pago',
 			'fechadeposito': 'Fecha depositado/transeferido',
 			'codigodeposito': 'Codigo del deposito',
+			'banco': 'Nombre Banco',
 		}
 
 		widgets = {
 			'monto': forms.NumberInput(attrs={'class':'validate'}),
 			'fecha': forms.DateInput(format='%Y-%m-%d',attrs={'type':'date'}),
 			'tipo' : forms.TextInput(attrs={'class':'validate'}),
+			'banco' : forms.TextInput(attrs={'class':'validate'}),
 			'recibio': forms.TextInput(attrs={'class':'validate'}),
 			'codigo': forms.TextInput(attrs={'class':'validate'}),
 			'fechadeposito': forms.DateInput(format='%Y-%m-%d',attrs={'type':'date'}),
@@ -140,16 +143,19 @@ class EmpresaForm(forms.ModelForm):
 			'nombre',
 			'telefono',
 			'correo',
+			'password',
 		]
 
 		labels = {
 			'nombre': 'Nombre Empresa',
 			'telefono': 'Telefono',
 			'correo': 'Email',
+			'password': 'Contraseña Empresa'
 		}
 
 		widgets = {
 			'nombre':forms.TextInput(attrs={'class':'validate'}),
 			'telefono':forms.NumberInput(attrs={'class':'validate'}),	
 			'correo':forms.EmailInput(attrs={'class':'validate'}),
+			'password':forms.TextInput(attrs={'class':'validate','pattern':'.{8,}'}),
 		}

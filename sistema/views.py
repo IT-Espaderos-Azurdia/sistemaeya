@@ -1,7 +1,9 @@
-from django.shortcuts import render, redirect
-from sistema.forms import CobroForm, EmpresaForm, CobroEmpresaForm, ExpedienteForm
-from sistema.models import Cobro, Empresa, CobroEmpresa, Expediente, OperacionMes
-import datetime
+from django.shortcuts import render, redirect, HttpResponse
+from sistema.forms import CobroForm, EmpresaForm, CobroEmpresaForm, ExpedienteForm, PagoForm
+from sistema.models import Cobro, Empresa, CobroEmpresa, Expediente, OperacionMes, CobroEmpresa, Abono
+import datetime, os.path
+from django.conf import settings
+from wsgiref.util import FileWrapper
 
 def home(request):
 
@@ -14,16 +16,49 @@ def login(request):
 	return render(request,template)
 
 def sistema(request):
-	d = datetime.datetime.today()
-	listado = Expediente.objects.all()
-
 	template = "sistema/sistema_home.html"
-	return render(request,template,{'month':d,'listado':listado})
+	empresas = Empresa.objects.all()
+	if request.method == 'POST':
+		id_empresa = request.POST.get("empresa","")
+		str_fecha = request.POST.get("fecha","")
+		fecha = str_fecha.split('-',1)
+		nombre = request.POST.get("nombre","")
+		listado = Expediente.objects.all().filter(cliente__contains=nombre,operacionmes__empresa__id=id_empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+		listprecio = []
+		for ex in listado:
+			empresa = ex.operacionmes.empresa.id
+			cobros = ex.cobro.all()
+			precio = 0
+			for c in cobros:
+				temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
+				precio += temp.first().precio
+			listprecio.append([ex,precio])
+		context = {'listado':listado,'listp':listprecio,'empresas':empresas}
+		return render(request,template,context)
+	else:
+		context = {'empresas':empresas}
+		return render(request,template, context)		
 
-def tramites(request):
+def sistema_pago(request):
+	template = "sistema/sistema_pago.html"
+	empresas = Empresa.objects.all()
+	if request.method == 'POST':
+		codigo = request.POST.get("codigo","")
+		listado = Abono.objects.all().filter(codigo__contains=codigo)
+		context = {'listado':listado}
+		return render(request,template,context)
+	else:
+		return render(request,template)
 
-	template = "sistema/tramites.html"
-	return render(request,template)
+def dowload_File(request,id_expediente):
+	expediente = Expediente.objects.get(id=id_expediente)
+	archivo = expediente.docfile.name
+	f = open(settings.MEDIA_ROOT+'/'+archivo,"rb")
+	response = HttpResponse(FileWrapper(f), content_type='application/pdf')
+	response ['Content-Disposition'] = 'attachment; filename='+os.path.basename(archivo)
+	f.close()
+	return response
+	
 
 # --------------------------------------------------------------------
 # ------------------ FUNCIONES CRUD EXPEDIENTE -----------------------
@@ -61,12 +96,58 @@ def update_expediente(request,id_expediente):
 	if request.method == 'GET':
 		form = ExpedienteForm(instance=expediente)
 	else:
-		form = ExpedienteForm(request.POST,instance=expediente)
+		form = ExpedienteForm(request.POST,request.FILES,instance=expediente)
 		if form.is_valid():
 			form.save()
 		return redirect('form_expediente')
 	template = "sistema/forms/expediente.html"
 	context = {'form':form,'key_Form':True,'Key_empresa':False}
+	return render(request,template,context)
+
+# --------------------------------------------------------------------
+# --------------------- FUNCIONES CRUD PAGO --------------------------
+# --------------------------------------------------------------------
+
+# Funcion agregar una pago
+def form_pago(request):
+	template = "sistema/forms/pago.html"
+	abonos = Abono.objects.all()
+	if request.method == 'POST':
+		form = PagoForm(request.POST)
+		if form.is_valid():
+			empresa = request.POST.get("empresa","")
+			str_fecha = request.POST.get("fecha_operacion","")
+			fecha = str_fecha.split('-',1)
+			if OperacionMes.objects.all().filter(empresa=empresa,mes=fecha[1],anio=fecha[0]).exists():
+				print("HOLA ENTRE HAHAHAHAHA")
+				pago = form.save(commit=False)
+				pago.operacionmes = OperacionMes.objects.get(empresa=empresa,mes=fecha[1],anio=fecha[0])
+				pago.save()
+		return redirect('form_pago')
+	else:
+		form = PagoForm()
+	empresas = Empresa.objects.all()
+	context = {'form':form,'abonos':abonos,'empresas':empresas,'key_empresa':True}		
+	return render(request,template,context)	
+
+# Funcion actualizar pago
+def update_pago(request,id_pago):
+	abono = Abono.objects.get(id=id_pago)
+	if request.method == 'GET':
+		form = PagoForm(instance=abono)
+	else:
+		form = PagoForm(request.POST,instance=abono)
+		if form.is_valid():
+			empresa = request.POST.get("empresa","")
+			str_fecha = request.POST.get("fecha_operacion","")
+			fecha = str_fecha.split('-',1)
+			pago = form.save(commit=False)
+			pago.operacionmes = OperacionMes.objects.get(empresa=empresa,mes=fecha[1],anio=fecha[0])
+			pago.save()
+		return redirect('sistema_pago')
+	template = "sistema/forms/pago.html"
+	empresas = Empresa.objects.all()
+	context = {'form':form,'empresas':empresas}
 	return render(request,template,context)
 
 # --------------------------------------------------------------------
@@ -76,6 +157,7 @@ def update_expediente(request,id_expediente):
 # Funcion agregar una empresa
 def form_empresa(request):
 	template = "sistema/forms/empresa.html"
+	empresas = Empresa.objects.all()
 	if request.method == 'POST':
 		form = EmpresaForm(request.POST)
 		if form.is_valid():
@@ -83,7 +165,7 @@ def form_empresa(request):
 		return redirect('form_empresa')
 	else:
 		form = EmpresaForm()
-	context = {'form':form}		
+	context = {'form':form,'empresas':empresas}		
 	return render(request,template,context)	
 
 # Funcion actualizar empresa

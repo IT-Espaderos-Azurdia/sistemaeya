@@ -15,7 +15,7 @@
 
     <div class="row white col s12 l10 offset-l1 " >
       
-      <div class=" row col s12 l12 ">
+      <div class=" row col s12 l6 ">
         <div class="row">
           <div class="input-field">
             <i class="material-icons prefix">account_circle</i>
@@ -25,7 +25,7 @@
         </div>
       </div>
 
-      <div class=" row col s12 l12">
+      <div class=" row col s12 l6">
         <div class="row">
           <div class="input-field">
             <i class="material-icons prefix">phone</i>
@@ -35,12 +35,22 @@
         </div>
       </div>
 
-      <div class=" row col s12 l12">
+      <div class=" row col s12 l6">
         <div class="row">
           <div class="input-field">
             <i class="material-icons prefix">email</i>
             {{ form.correo }}
             <label for="{{ form.correo.id }}">{{ form.correo.label }}</label>
+          </div>  
+        </div>
+      </div>
+
+      <div class=" row col s12 l6">
+        <div class="row">
+          <div class="input-field">
+            <i class="material-icons prefix">security</i>
+            {{ form.password }}
+            <label for="{{ form.correo.id }}">{{ form.password.label }}</label>
           </div>  
         </div>
       </div>
@@ -54,7 +64,7 @@
   </div>
 </form>
 
-{% if listado %}
+{% if empresas %}
 
 <div class="row white col s12 l12 " >
   <div class="center blue-grey darken-3 s12 l12 white-text">
@@ -70,26 +80,30 @@
               <th>Nombre Empresa</th>
               <th>Telefono</th>
               <th>Email</th>
+              <th>Contraseña</th>
               <th>Editar</th>
-              <th>Eliminar</th>
+             <!-- <th>Eliminar</th> -->
           </tr>
         </thead>
         <tbody>
-        {% for empresa in listado %}
+        {% for empresa in empresas %}
           <tr>
             <td>{{ empresa.nombre }}</td>
             <td>{{ empresa.telefono }}</td>
             <td>{{ empresa.correo }}</td>
+            <td>{{ empresa.password }}</td>
             <td>
               <a class="btn col l6 s8 waves-effect waves-light orange black-text z-depth-1" href='/editar_empresa/{{empresa.id}}/'>
                 <i class="material-icons  black-text">mode_edit</i>
               </a><br>
             </td>
+            <!--
             <td>
               <a class="btn col l6 s8 waves-effect waves-light red black-text z-depth-1" href='/eliminar_empresa/{{empresa.id}}/'>
-                <i class="material-icons  black-text">delete</i>
+                 <i class="material-icons  black-text">delete</i> 
               </a>
             </td>
+            -->
           </tr>
         {% endfor %}
          

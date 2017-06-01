@@ -4,7 +4,7 @@
 {% block content %}
 
 <div class="row white" style="margin-bottom: 0px;">
-  <form method="post">
+  <form enctype="multipart/form-data" method="post" >
     {% csrf_token %}
     <div class="row white" >
       
@@ -24,7 +24,6 @@
             </li>
           {% endfor %}
         </ul>  
-        
         
       </div>
 
@@ -95,7 +94,14 @@
           {{form.fecha_entrega}}            
         </div>
         
-        <div class="row col l12 s12 ">
+        <div class="row col l6 s12 ">
+          <div class="input-field">
+            {{form.recibio}}
+            <label for="{{form.recibio.id}}">{{form.recibio.label}}</label>
+          </div>          
+        </div>
+
+        <div class="row col l6 s12 ">
           <div class="input-field">
             {{form.descripcion_estatus}}
             <label for="{{form.descripcion_estatus.id}}">{{form.descripcion_estatus.label}}</label>
@@ -103,15 +109,7 @@
         </div>
 
         <div class="row col l12 s12 ">
-          <div class="file-field input-field">
-            <div class="btn green">
-              <span>Archivo</span>
-              {{ form.docfile}}
-            </div>
-            <div class="file-path-wrapper">
-              <input class="file-path validate" type="text">
-            </div>
-          </div>         
+          {{form.docfile}}        
         </div>
 
         {% endif %}

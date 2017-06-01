@@ -11,6 +11,12 @@ urlpatterns = [
 
 	url(r'^$', views.home, name='home'),
 	url(r'^sistema/$', login_required(views.sistema), name='sistema'),
+	url(r'^sistema/pago/$', login_required(views.sistema_pago), name='sistema_pago'),
+
+	url(r'^pdf/(?P<id_expediente>\d+)/$', login_required(views.dowload_File), name='dowload_File'),	
+
+	url(r'^form_pago/$', login_required(views.form_pago), name='form_pago'),
+	url(r'^editar_pago/(?P<id_pago>\d+)/$', login_required(views.update_pago), name='update_pago'),
 
 	url(r'^form_expediente/$', login_required(views.form_expediente), name='form_expediente'),
 	url(r'^editar_expediente/(?P<id_expediente>\d+)/$', login_required(views.update_expediente), name='update_expediente'),
@@ -36,5 +42,5 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-	urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_URL)
+	urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 	urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_URL)

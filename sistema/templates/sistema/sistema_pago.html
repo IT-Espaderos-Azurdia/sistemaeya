@@ -1,0 +1,80 @@
+{% extends 'sistema/base/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="row" style="margin-bottom: 0px;">
+  
+  <div class="row white" >
+    
+    <div class="center blue-grey darken-4 s12 l12 white-text z-depth-3">
+      <h4 class="">
+        BUSCAR PAGO
+      </h4>  
+    </div>
+
+    <div class=" col l12 s12">
+    <div class="row">
+      <form method="post">{% csrf_token %}
+      <div class="col s12 l12 ">
+        <div class="input-field col s12 l10 ">
+          <i class="material-icons prefix">search</i>
+          <input id="codigo" name="codigo" type="text" class="validate" required="required">
+          <label for="codigo">Codigo del pago (Cod. boleta, cheque, etc.)</label>
+        </div>
+
+        <br>
+        <button class="btn col l2 s12 waves-effect waves-light pink white-text z-depth-1" type="sumit">
+          Buscar
+        </button>
+      </div>
+
+      </form>
+    </div>
+      {% if listado %}
+      <table class="highlight responsive-table col s12 l12" id="tabla">
+        <thead>
+          <tr>
+              <th>Empresa</th>
+              <th>Mes De Operacion</th>
+              <th>Codigo</th>
+              <th>Monto Recibido</th>
+              <th>Quien Recibido</th>
+              <th>Fecha Recibido</th>
+              <th>Banco</th>
+              <th>Forma De Pago</th>
+              <th>Codigo Del Deposito</th>
+              <th>Fecha Deposito</th>
+              <th>Editar</th>
+          </tr>
+        </thead>
+
+        <tbody>
+        {% for pago in listado %}
+          <tr>
+            <td>{{pago.operacionmes.empresa}}</td>
+            <td>{{pago.operacionmes.mes}}/{{pago.operacionmes.anio}}</td>
+            <td>{{pago.codigo}}</td>
+            <td>{{pago.monto}}</td>
+            <td>{{pago.recibio}}</td>
+            <td>{{pago.fecha}}</td>
+            <td>{{pago.banco}}</td>
+            <td>{{pago.tipo}}</td>
+            <td>{{pago.codigodeposito}}</td>
+            <td>{{pago.fechadeposito}}</td>
+            <td>
+              <a class="btn col l12 s12 waves-effect waves-light red black-text z-depth-1" href='/editar_pago/{{pago.id}}/'>
+                <i class="material-icons  black-text">mode_edit</i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <br>
+    </div>
+  </div>
+</div>
+
+  {% endif %}
+{% endblock content %}

@@ -143,14 +143,15 @@ class OperacionMes(models.Model):
         unique_together =('empresa','mes','anio',)
 
 class Abono(models.Model):
+    operacionmes = models.ForeignKey(OperacionMes,null=True,blank=True,on_delete=models.CASCADE)
     monto = models.PositiveIntegerField(null=False,blank=False)
     fecha = models.DateField(null=False,blank=False)
+    banco = models.CharField(null=True,blank=True,max_length=100)
     tipo = models.CharField(null=False,blank=False,max_length=100)
     recibio = models.CharField(null=False,blank=False,max_length=100)
     codigo = models.CharField(null=False,blank=False,max_length=100)
     fechadeposito = models.DateField(null=True,blank=True)
-    codigodeposito = models.CharField(null=False,blank=False,max_length=100)
-    operacionmes = models.ForeignKey(OperacionMes,null=False,blank=False,on_delete=models.CASCADE)
+    codigodeposito = models.CharField(null=True,blank=True,max_length=100)
 
 class Expediente(models.Model):
     cliente = models.CharField(null=True,blank=True,max_length=100)
@@ -166,4 +167,4 @@ class Expediente(models.Model):
     tenencias = models.PositiveIntegerField(null=False,blank=False)
     estatus = models.CharField(null=False,blank=False,max_length=6)
     descripcion_estatus = models.CharField(null=True,blank=True,max_length=200)
-    docfile = models.FileField(upload_to='archivos/%Y/%m/%d',null=True,blank=True)
+    docfile = models.FileField(upload_to='archivos/%Y/%m/%d/%H/%M/%S/',null=True,blank=True)
