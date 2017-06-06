@@ -108,7 +108,7 @@
         <b>Cobros: </b> {% for c in expe.0.cobro.all %} {{c}},{% endfor %}  <br>
         <b>Reporte Error:</b>
           {% if expe.0.docfile.name %}
-            <a href="/pdf/{{expe.0.id}}">archivo</a>
+            <a target='_blank' href="/pdf/{{expe.0.id}}">archivo</a>
           {% else %}
             --------
           {% endif %}            

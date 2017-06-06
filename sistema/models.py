@@ -1,6 +1,8 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.dispatch import receiver
+import os
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=80)
@@ -167,4 +169,30 @@ class Expediente(models.Model):
     tenencias = models.PositiveIntegerField(null=False,blank=False)
     estatus = models.CharField(null=False,blank=False,max_length=6)
     descripcion_estatus = models.CharField(null=True,blank=True,max_length=200)
-    docfile = models.FileField(upload_to='archivos/%Y/%m/%d/%H/%M/%S/',null=True,blank=True)
+    docfile = models.FileField(upload_to='archivos/',null=True,blank=True)
+
+
+
+@receiver(models.signals.post_delete, sender=Expediente)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    
+    if instance.docfile:
+        if os.path.isfile(instance.docfile.path):
+            os.remove(instance.file.path)
+
+@receiver(models.signals.pre_save, sender=Expediente)
+def auto_delete_file_on_change(sender, instance, **kwargs):
+    
+    if not instance.pk:
+        return False
+
+    try:
+        old_file = Expediente.objects.get(pk=instance.pk).docfile
+    except Expediente.DoesNotExist:
+        return False
+
+    new_file = instance.docfile
+    if not old_file == new_file:
+        if old_file:
+            if os.path.isfile(old_file.path):
+                os.remove(old_file.path)

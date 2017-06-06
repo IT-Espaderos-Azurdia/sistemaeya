@@ -48,7 +48,9 @@
         <thead>
           <tr>
               <th>Nombre Cobro</th>
+              {% if user.get_username == 'administrador' %}
               <th>Eliminar</th>
+              {% endif %}
           </tr>
         </thead>
         <tbody>
@@ -57,11 +59,13 @@
         {% for cobro in listado %}
           <tr>
             <td>{{ cobro.nombre }}</td>
+            {% if user.get_username == 'administrador' %}
             <td>
               <a class="btn col l6 s8 waves-effect waves-light red black-text z-depth-1" href='/eliminar_cobro/{{cobro.id}}/'>
                 <i class="material-icons  black-text">delete</i>
               </a>
             </td>
+            {% endif %}
           </tr>
         {% endfor %}
 

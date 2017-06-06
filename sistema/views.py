@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect, HttpResponse
+from django.core.files.storage import FileSystemStorage
+from django.template.loader import render_to_string
 from sistema.forms import CobroForm, EmpresaForm, CobroEmpresaForm, ExpedienteForm, PagoForm
 from sistema.models import Cobro, Empresa, CobroEmpresa, Expediente, OperacionMes, CobroEmpresa, Abono
 import datetime, os.path
+from weasyprint import HTML
 from django.conf import settings
 from wsgiref.util import FileWrapper
 
@@ -14,6 +17,16 @@ def login(request):
 
 	template = "sistema/login.html"
 	return render(request,template)
+
+def sistema_reporte(request):
+	if request.method == 'POST':
+		print('like')
+	else:
+		template = 'sistema/reportes.html'
+		reportes = ['Reporte detalle','Reporte general de estado']
+		empresas = Empresa.objects.all()
+		context = {'empresas':empresas,'reportes':reportes}
+		return render(request,template,context)
 
 def sistema(request):
 	template = "sistema/sistema_home.html"
@@ -55,9 +68,26 @@ def dowload_File(request,id_expediente):
 	archivo = expediente.docfile.name
 	f = open(settings.MEDIA_ROOT+'/'+archivo,"rb")
 	response = HttpResponse(FileWrapper(f), content_type='application/pdf')
-	response ['Content-Disposition'] = 'attachment; filename='+os.path.basename(archivo)
+	response ['Content-Disposition'] = 'inline; filename='+os.path.basename(archivo)
 	f.close()
 	return response
+
+
+def reporte_uno(request):
+
+	html_string = render_to_string('sistema/reportes/reporte_uno.html',{'nombre':'ESTSE ES UN TEST DE IMPRESION DE REPORTES EN PDF'})
+
+	html = HTML(string=html_string)
+	namefile = "reporte_uno.pdf"
+	html.write_pdf(target=settings.MEDIA_ROOT+'/'+namefile)
+
+	f = open(settings.MEDIA_ROOT+'/'+namefile,"rb")
+	response = HttpResponse(FileWrapper(f), content_type='application/pdf')
+	response ['Content-Disposition'] = 'inline; filename='+os.path.basename(namefile)
+	f.close()
+	return response
+
+
 	
 
 # --------------------------------------------------------------------

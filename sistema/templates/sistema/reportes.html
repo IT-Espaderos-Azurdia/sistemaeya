@@ -1,0 +1,71 @@
+{% extends 'sistema/base/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="row" style="margin-bottom: 0px;">
+  
+  <div class="row white" >
+    
+    <div class="center blue-grey darken-4 s12 l12 white-text z-depth-3">
+      <h4 class="">
+        Generación De Reportes
+      </h4>  
+    </div>
+
+    <div class=" col l12 s12">
+    <div class="row">
+      <form method="post">{% csrf_token %}
+
+      <div class="col s12 l12 ">
+
+        <div class="row input-field col  s12 l4">
+          <select id="reporte" name="reporte" required="required">
+            {% for reporte in reportes %}
+              <option value="{{forloop.counter0}}">{{reporte}}</option>
+            {% endfor %}
+          </select>
+          <label>Sleccionar reporte de: </label>
+        </div>
+        
+        <div class=" row col s12 l2 ">
+          <label class="col s12 l12" for="fecha">Mes y Año</label><br>
+          <input id="fecha" name="fecha" type="month" class=" col s12 l12 validate " >
+        </div>
+
+        <div class="row input-field col  s12 l4">
+          <select id="empresa" name="empresa" required="required">
+            {% for empresa in empresas %}
+              <option value="{{empresa.id}}">{{empresa.nombre}}</option>
+            {% endfor %}
+          </select>
+          <label>Sleccionar Empresa</label>
+        </div>
+
+        <br>
+        <a class="btn col l2 s12 waves-effect waves-light pink white-text z-depth-1" target='_blank' href="/reporteuno">
+          Generar
+        </a>
+      </div>
+
+      </form>
+    </div>
+    
+    <div class="divider col s12 l12"></div>
+    <label>
+      <b>Nota</b>:<br>
+      * El reporte de detalle es por empresa, generando estado de cuenta(deuda/abono), listado de abonos y expedientes del mes<br>
+      * El reporte general deuda/abonos <br>
+    </label>
+    <br><br><br><br>
+    <div class="row col s12 l12 red-text" id="error">
+      
+    </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+{% endblock content %}

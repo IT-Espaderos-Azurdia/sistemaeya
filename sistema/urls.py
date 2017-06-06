@@ -13,6 +13,9 @@ urlpatterns = [
 	url(r'^sistema/$', login_required(views.sistema), name='sistema'),
 	url(r'^sistema/pago/$', login_required(views.sistema_pago), name='sistema_pago'),
 
+	url(r'^sistema/reportes/$', login_required(views.sistema_reporte), name='sistema_reporte'),
+	url(r'^reporteuno/$', login_required(views.reporte_uno), name='reporte_uno'),
+
 	url(r'^pdf/(?P<id_expediente>\d+)/$', login_required(views.dowload_File), name='dowload_File'),	
 
 	url(r'^form_pago/$', login_required(views.form_pago), name='form_pago'),
