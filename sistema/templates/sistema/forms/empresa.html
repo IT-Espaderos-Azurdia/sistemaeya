@@ -28,16 +28,6 @@
       <div class=" row col s12 l6">
         <div class="row">
           <div class="input-field">
-            <i class="material-icons prefix">phone</i>
-            {{ form.telefono }}
-            <label for="{{ form.telefono.id }}">{{ form.telefono.label }}</label>
-          </div>  
-        </div>
-      </div>
-
-      <div class=" row col s12 l6">
-        <div class="row">
-          <div class="input-field">
             <i class="material-icons prefix">email</i>
             {{ form.correo }}
             <label for="{{ form.correo.id }}">{{ form.correo.label }}</label>
@@ -45,7 +35,27 @@
         </div>
       </div>
 
-      <div class=" row col s12 l6">
+      <div class=" row col s12 l4">
+        <div class="row">
+          <div class="input-field">
+            <i class="material-icons prefix">phone</i>
+            {{ form.telefono }}
+            <label for="{{ form.telefono.id }}">{{ form.telefono.label }}</label>
+          </div>  
+        </div>
+      </div>
+
+      <div class=" row col s12 l4">
+        <div class="row">
+          <div class="input-field">
+            <i class="material-icons prefix">account_circle</i>
+            {{ form.usuario }}
+            <label for="{{ form.usuario.id }}">{{ form.usuario.label }}</label>
+          </div>  
+        </div>
+      </div>
+
+      <div class=" row col s12 l4">
         <div class="row">
           <div class="input-field">
             <i class="material-icons prefix">security</i>
@@ -54,6 +64,8 @@
           </div>  
         </div>
       </div>
+
+      
 
       <div class="row col l12 s12">
         <button class=" col l3 s12 btn-large waves-effect waves-light pink white-text z-depth-4 " type="sumit">
@@ -80,9 +92,12 @@
               <th>Nombre Empresa</th>
               <th>Telefono</th>
               <th>Email</th>
+              <th>Usuario</th>
               <th>Contraseña</th>
               <th>Editar</th>
-             <!-- <th>Eliminar</th> -->
+              {% if user.get_username == 'administrador' %}
+              <th>Eliminar</th>
+              {% endif %}
           </tr>
         </thead>
         <tbody>
@@ -91,19 +106,22 @@
             <td>{{ empresa.nombre }}</td>
             <td>{{ empresa.telefono }}</td>
             <td>{{ empresa.correo }}</td>
+            <td>{{ empresa.usuario }}</td>
             <td>{{ empresa.password }}</td>
             <td>
               <a class="btn col l6 s8 waves-effect waves-light orange black-text z-depth-1" href='/editar_empresa/{{empresa.id}}/'>
                 <i class="material-icons  black-text">mode_edit</i>
               </a><br>
             </td>
-            <!--
+            
+            {% if user.get_username == 'administrador' %}
             <td>
               <a class="btn col l6 s8 waves-effect waves-light red black-text z-depth-1" href='/eliminar_empresa/{{empresa.id}}/'>
                  <i class="material-icons  black-text">delete</i> 
               </a>
             </td>
-            -->
+            {% endif %}
+            
           </tr>
         {% endfor %}
          

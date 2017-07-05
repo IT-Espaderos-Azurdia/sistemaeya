@@ -20,7 +20,56 @@ def login(request):
 
 def sistema_reporte(request):
 	if request.method == 'POST':
-		print('like')
+		reporte = request.POST.get("reporte","")
+		empresa = request.POST.get("empresa","")
+		str_fecha = request.POST.get("fecha","")
+		fecha = str_fecha.split('-',1)
+		
+		op_mes = OperacionMes.objects.filter(empresa=empresa,mes=fecha[1],anio=fecha[0])
+		
+		if op_mes.first() is not None:
+			if reporte == '0':
+				listado = Expediente.objects.all().filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+				listprecio = []
+				for ex in listado:
+					empresa = ex.operacionmes.empresa.id
+					cobros = ex.cobro.all()
+					precio = 0
+					for c in cobros:
+						temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
+						if temp.first() is not None:
+							if 'tenencia' in c.nombre.lower():
+								precio += temp.first().precio * ex.tenencias
+							elif 'firma' in c.nombre.lower():
+								precio += temp.first().precio * ex.autenticafirma
+							elif 'dpi' in c.nombre.lower():
+								precio += temp.first().precio * ex.autenticadpi
+							elif 'ingresos' in c.nombre.lower():
+								precio += temp.first().precio * ex.constanciaingresos
+							elif 'venta' in c.nombre.lower():
+								precio += temp.first().precio * ex.formularios
+							else:
+								precio += temp.first().precio
+					listprecio.append([ex,precio])
+				context2 = {'key_reporte_uno':True,'key_reporte_dos':False,'listado':listado,'precio':listprecio}	
+			else:
+				context2 = {'key_reporte_uno':False,'key_reporte_dos':True}
+		else:
+			context2 = {'key_reporte_uno':False,'key_reporte_dos':False}
+
+
+		html_string = render_to_string('sistema/reportes/reporte_uno.html',context2)
+
+		html = HTML(string=html_string)
+		namefile = "reporte_uno.pdf"
+		html.write_pdf(target=settings.MEDIA_ROOT+'/'+namefile)
+
+		f = open(settings.MEDIA_ROOT+'/'+namefile,"rb")
+		response = HttpResponse(FileWrapper(f), content_type='application/pdf')
+		response ['Content-Disposition'] = 'inline; filename='+os.path.basename(namefile)
+		f.close()
+		return response
+
 	else:
 		template = 'sistema/reportes.html'
 		reportes = ['Reporte detalle','Reporte general de estado']
@@ -36,7 +85,7 @@ def sistema(request):
 		str_fecha = request.POST.get("fecha","")
 		fecha = str_fecha.split('-',1)
 		nombre = request.POST.get("nombre","")
-		listado = Expediente.objects.all().filter(cliente__contains=nombre,operacionmes__empresa__id=id_empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+		listado = Expediente.objects.all().filter(cliente__icontains=nombre,operacionmes__empresa__id=id_empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
 		listprecio = []
 		for ex in listado:
 			empresa = ex.operacionmes.empresa.id
@@ -44,7 +93,19 @@ def sistema(request):
 			precio = 0
 			for c in cobros:
 				temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
-				precio += temp.first().precio
+				if temp.first() is not None:
+					if 'tenencia' in c.nombre.lower():
+						precio += temp.first().precio * ex.tenencias
+					elif 'firma' in c.nombre.lower():
+						precio += temp.first().precio * ex.autenticafirma
+					elif 'dpi' in c.nombre.lower():
+						precio += temp.first().precio * ex.autenticadpi
+					elif 'ingresos' in c.nombre.lower():
+						precio += temp.first().precio * ex.constanciaingresos
+					elif 'venta' in c.nombre.lower():
+						precio += temp.first().precio * ex.formularios
+					else:
+						precio += temp.first().precio
 			listprecio.append([ex,precio])
 		context = {'listado':listado,'listp':listprecio,'empresas':empresas}
 		return render(request,template,context)
@@ -75,7 +136,7 @@ def dowload_File(request,id_expediente):
 
 def reporte_uno(request):
 
-	html_string = render_to_string('sistema/reportes/reporte_uno.html',{'nombre':'ESTSE ES UN TEST DE IMPRESION DE REPORTES EN PDF'})
+	html_string = render_to_string('sistema/reportes/reporte_uno.html',{'lo':'lo'})
 
 	html = HTML(string=html_string)
 	namefile = "reporte_uno.pdf"
@@ -149,7 +210,6 @@ def form_pago(request):
 			str_fecha = request.POST.get("fecha_operacion","")
 			fecha = str_fecha.split('-',1)
 			if OperacionMes.objects.all().filter(empresa=empresa,mes=fecha[1],anio=fecha[0]).exists():
-				print("HOLA ENTRE HAHAHAHAHA")
 				pago = form.save(commit=False)
 				pago.operacionmes = OperacionMes.objects.get(empresa=empresa,mes=fecha[1],anio=fecha[0])
 				pago.save()
@@ -168,16 +228,16 @@ def update_pago(request,id_pago):
 	else:
 		form = PagoForm(request.POST,instance=abono)
 		if form.is_valid():
-			empresa = request.POST.get("empresa","")
-			str_fecha = request.POST.get("fecha_operacion","")
-			fecha = str_fecha.split('-',1)
+			#empresa = request.POST.get("empresa","")
+			#str_fecha = request.POST.get("fecha_operacion","")
+			#fecha = str_fecha.split('-',1)
 			pago = form.save(commit=False)
-			pago.operacionmes = OperacionMes.objects.get(empresa=empresa,mes=fecha[1],anio=fecha[0])
+			#pago.operacionmes = OperacionMes.objects.get(empresa=empresa,mes=fecha[1],anio=fecha[0])
 			pago.save()
 		return redirect('sistema_pago')
 	template = "sistema/forms/pago.html"
 	empresas = Empresa.objects.all()
-	context = {'form':form,'empresas':empresas}
+	context = {'form':form,'empresas':empresas,'key':False}
 	return render(request,template,context)
 
 # --------------------------------------------------------------------

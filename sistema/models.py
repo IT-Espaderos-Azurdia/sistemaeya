@@ -123,7 +123,8 @@ class Empresa(models.Model):
     nombre = models.CharField(max_length=100)
     telefono = models.PositiveIntegerField()
     correo = models.EmailField(max_length=254)
-    password = models.CharField(max_length=8,null=True,blank=True,unique=True)
+    usuario = models.CharField(max_length=100,null=True,blank=True,unique=True)
+    password = models.CharField(max_length=8,null=True,blank=True)
 
     def __str__(self):
         return '{}'.format(self.nombre)
@@ -155,6 +156,7 @@ class Abono(models.Model):
     fechadeposito = models.DateField(null=True,blank=True)
     codigodeposito = models.CharField(null=True,blank=True,max_length=100)
 
+
 class Expediente(models.Model):
     cliente = models.CharField(null=True,blank=True,max_length=100)
     operacionmes = models.ForeignKey(OperacionMes,null=True,blank=True,on_delete=models.CASCADE)
@@ -166,8 +168,12 @@ class Expediente(models.Model):
     fecha_entrega = models.DateField(null=True,blank=True)
     recibio = models.CharField(null=True,blank=True,max_length=100)
     entrego = models.CharField(null=True,blank=True,max_length=50)
-    tenencias = models.PositiveIntegerField(null=False,blank=False)
-    estatus = models.CharField(null=False,blank=False,max_length=6)
+    tenencias = models.PositiveIntegerField(null=True,blank=True)
+    autenticadpi = models.PositiveIntegerField(null=True,blank=True)
+    autenticafirma = models.PositiveIntegerField(null=True,blank=True)
+    constanciaingresos = models.PositiveIntegerField(null=True,blank=True)
+    formularios = models.PositiveIntegerField(null=True,blank=True)
+    estatus = models.CharField(null=False,blank=False,max_length=10)
     descripcion_estatus = models.CharField(null=True,blank=True,max_length=200)
     docfile = models.FileField(upload_to='archivos/',null=True,blank=True)
 

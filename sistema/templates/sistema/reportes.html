@@ -30,7 +30,7 @@
         
         <div class=" row col s12 l2 ">
           <label class="col s12 l12" for="fecha">Mes y Año</label><br>
-          <input id="fecha" name="fecha" type="month" class=" col s12 l12 validate " >
+          <input id="fecha" name="fecha" type="month" class=" col s12 l12 validate " required="required">
         </div>
 
         <div class="row input-field col  s12 l4">
@@ -39,13 +39,13 @@
               <option value="{{empresa.id}}">{{empresa.nombre}}</option>
             {% endfor %}
           </select>
-          <label>Sleccionar Empresa</label>
+          <label>Seleccionar Empresa</label>
         </div>
 
         <br>
-        <a class="btn col l2 s12 waves-effect waves-light pink white-text z-depth-1" target='_blank' href="/reporteuno">
+        <button class="btn col l2 s12 waves-effect waves-light pink white-text z-depth-1" formtarget='_blank' type="submit">
           Generar
-        </a>
+        </button>
       </div>
 
       </form>

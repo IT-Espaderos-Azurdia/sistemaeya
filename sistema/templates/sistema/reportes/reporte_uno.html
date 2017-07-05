@@ -9,10 +9,53 @@
 
   <body >
 
-     
-
 <h1 >
-  HOLA MI NOMBRES ES {{nombre}}
+
+  {% if key_reporte_uno %}
+  	<h1 style="text-align: center;">DETALLE DE EXPEDIENTES </h1>
+  {% for expe in precio %}
+
+  	<p>--------------------------------------------------------------------------------------------------------------</p>
+      <p style="text-align: justify;">
+        <b>Cliente : </b>  {{expe.0.cliente}} <br>
+        <b>Total a cobrar : </b>  {{expe.1}} <br>
+        <b>Empresa : </b> {{expe.0.operacionmes.empresa}} <br>
+        <b>Fecha Pago: </b> {{expe.0.fecha_ingreso_oficina}}  <br>
+        <b>Fecha Ingreso Digecam : </b> {% if expe.0.fecha_ingreso_digecam %}  {{expe.0.fecha_ingreso_digecam}} {% else %} -------- {% endif %} <br>
+        <b>Fecha cita : </b>  {% if expe.0.fecha_cita %} {{expe.0.fecha_cita}} {% else %} -------- {% endif %} <br>
+        <b>Fecha pago : </b>  {% if expe.0.fecha_pago %} {{expe.0.fecha_pago}} {% else %} -------- {% endif %} <br>
+        <b>Fecha entrega : </b>  {% if expe.0.fecha_entrega %}{{expe.0.fecha_entrega}}{% else %} -------- {% endif %} <br>
+        <b>Quien entrego : </b> {% if expe.0.entrego %} {{expe.0.entrego}} {% else %} -------- {% endif %} <br>
+        <b>Quien Recibio : </b> {% if expe.0.recibio %} {{expe.0.recibio}} {% else %} -------- {% endif %} <br>
+        <b>Estatus: </b> {{expe.0.estatus}}     <br>
+        <b>Cobros: </b> {% for c in expe.0.cobro.all %} {{c}},{% endfor %}  <br>
+        <b>Reporte Error:</b>
+          {% if expe.0.docfile.name %}
+            <a target='_blank' href="/pdf/{{expe.0.id}}">archivo</a>
+          {% else %}
+            --------
+          {% endif %}            
+        <br>
+        <b>Descripcion:</b>
+          {% if expe.0.descripcion_estatus %}
+            {{expe.0.descripcion_estatus}}
+          {% else %}
+            --------
+          {% endif %}
+      </p>
+
+    {% endfor %}
+  
+  {% elif key_reporte_dos %}
+
+  	ESTE ES EL REPORTE DOS
+
+  {% else %}
+
+    	EL MES DE OPERACION NO ES VALIDO!
+
+  {% endif %}
+
 </h1>
   
     

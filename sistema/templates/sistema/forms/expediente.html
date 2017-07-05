@@ -40,24 +40,52 @@
         </div>
         {% endif %}
 
-        <div class="row ">
+        <div class="row col l9 s12">
           <div class="input-field">
             {{form.cliente}}
             <label for="{{form.cliente.id}}">{{form.cliente.label}}</label>
           </div>          
         </div>
 
-        <div class="row col l6 s12">
+        <div class="row col l3 s12">
+          <div class="input-field">
+            {{form.estatus}}
+            <label for="{{form.estatus.id}}">{{form.estatus.label}}</label>
+          </div>          
+        </div>
+
+        <div class="row col l4 s12">
           <div class="input-field">
             {{form.tenencias}}
             <label for="{{form.tenencias.id}}">{{form.tenencias.label}}</label>
           </div>          
         </div>
 
+        <div class="row col l4 s12">
+          <div class="input-field">
+            {{form.autenticadpi}}
+            <label for="{{form.autenticadpi.id}}">{{form.autenticadpi.label}}</label>
+          </div>          
+        </div>
+
+        <div class="row col l4 s12">
+          <div class="input-field">
+            {{form.autenticafirma}}
+            <label for="{{form.autenticafirma.id}}">{{form.autenticafirma.label}}</label>
+          </div>          
+        </div>
+
         <div class="row col l6 s12">
           <div class="input-field">
-            {{form.estatus}}
-            <label for="{{form.estatus.id}}">{{form.estatus.label}}</label>
+            {{form.constanciaingresos}}
+            <label for="{{form.constanciaingresos.id}}">{{form.constanciaingresos.label}}</label>
+          </div>          
+        </div>
+
+        <div class="row col l6 s12">
+          <div class="input-field">
+            {{form.formularios}}
+            <label for="{{form.formularios.id}}">{{form.formularios.label}}</label>
           </div>          
         </div>
 

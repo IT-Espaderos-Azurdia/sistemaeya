@@ -16,6 +16,10 @@ class ExpedienteForm(forms.ModelForm):
 		    'recibio',
 		    'entrego',
 		    'tenencias',
+		    'autenticadpi',
+		    'autenticafirma',
+		    'constanciaingresos',
+		    'formularios',
 		    'estatus',
 		    'descripcion_estatus',
 		    'docfile',
@@ -31,7 +35,11 @@ class ExpedienteForm(forms.ModelForm):
 		    'fecha_entrega': 'Fecha de entrega',
 		    'recibio': 'Quien recibio',
 		    'entrego': 'Quien entrego',
-		    'tenencias': 'Numero de tenencias',
+		    'tenencias': 'Numero Tenencias',
+		    'autenticadpi': 'Numero Autenticas de DPI',
+		    'autenticafirma': 'Numero Autenticas de Firma',
+		    'constanciaingresos': 'Numero Constancias de Ingresos',
+		    'formularios': 'Numero Formularios',
 		    'estatus': 'Estatus',
 		    'descripcion_estatus': 'Descripcion del estatus',
 		    'docfile': 'Seleccione archivo',
@@ -47,8 +55,12 @@ class ExpedienteForm(forms.ModelForm):
 		    'fecha_entrega': forms.DateInput(format='%Y-%m-%d',attrs={'type':'date'}),
 		    'recibio': forms.TextInput(attrs={'class':'validate'}),
 		    'entrego': forms.TextInput(attrs={'class':'validate'}),
-		    'tenencias': forms.NumberInput(attrs={'class':'validate'}),
-		    'estatus': forms.Select(attrs={'class': 'validate'},choices=(('ok','ok'),('error','error'))),
+		    'tenencias': forms.NumberInput(attrs={'class':'validate','value':'1'}),
+		    'autenticadpi': forms.NumberInput(attrs={'class':'validate','value':'1'}),
+		    'autenticafirma': forms.NumberInput(attrs={'class':'validate','value':'1'}),
+		    'constanciaingresos': forms.NumberInput(attrs={'class':'validate','value':'1'}),
+		    'formularios': forms.NumberInput(attrs={'class':'validate','value':'1'}),
+		    'estatus': forms.Select(attrs={'class': 'validate'},choices=(('ok','ok'),('detenida','detenida'))),
 		    'descripcion_estatus': forms.TextInput(attrs={'class':'validate'}),
 		    'cliente': forms.TextInput(attrs={'class':'validate'}),
 		}
@@ -144,13 +156,16 @@ class EmpresaForm(forms.ModelForm):
 			'telefono',
 			'correo',
 			'password',
+			'usuario',
 		]
 
 		labels = {
 			'nombre': 'Nombre Empresa',
 			'telefono': 'Telefono',
 			'correo': 'Email',
-			'password': 'Contraseña Empresa'
+			'password': 'Contraseña Empresa',
+			'usuario': 'Usuario',
+
 		}
 
 		widgets = {
@@ -158,4 +173,5 @@ class EmpresaForm(forms.ModelForm):
 			'telefono':forms.NumberInput(attrs={'class':'validate'}),	
 			'correo':forms.EmailInput(attrs={'class':'validate'}),
 			'password':forms.TextInput(attrs={'class':'validate','pattern':'.{8,}'}),
+			'usuario':forms.TextInput(attrs={'class':'validate'}),
 		}
