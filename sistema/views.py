@@ -7,6 +7,7 @@ import datetime, os.path
 from weasyprint import HTML
 from django.conf import settings
 from wsgiref.util import FileWrapper
+from django.db.models import Sum
 
 def home(request):
 
@@ -24,9 +25,9 @@ def sistema_reporte(request):
 		empresa = request.POST.get("empresa","")
 		str_fecha = request.POST.get("fecha","")
 		fecha = str_fecha.split('-',1)
-		
+		Nombre_empresa = Empresa.objects.only('nombre').get(id=empresa)
 		op_mes = OperacionMes.objects.filter(empresa=empresa,mes=fecha[1],anio=fecha[0])
-		
+		Precio_Total = 0
 		if op_mes.first() is not None:
 			if reporte == '0':
 				listado = Expediente.objects.all().filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
@@ -40,20 +41,64 @@ def sistema_reporte(request):
 						if temp.first() is not None:
 							if 'tenencia' in c.nombre.lower():
 								precio += temp.first().precio * ex.tenencias
-							elif 'firma' in c.nombre.lower():
-								precio += temp.first().precio * ex.autenticafirma
-							elif 'dpi' in c.nombre.lower():
-								precio += temp.first().precio * ex.autenticadpi
-							elif 'ingresos' in c.nombre.lower():
-								precio += temp.first().precio * ex.constanciaingresos
-							elif 'venta' in c.nombre.lower():
-								precio += temp.first().precio * ex.formularios
+						#	elif 'firma' in c.nombre.lower():
+						#		precio += temp.first().precio * ex.autenticafirma
+						#	elif 'dpi' in c.nombre.lower():
+						#		precio += temp.first().precio * ex.autenticadpi
+						#	elif 'ingresos' in c.nombre.lower():
+						#		precio += temp.first().precio * ex.constanciaingresos
+						#	elif 'venta' in c.nombre.lower():
+						#		precio += temp.first().precio * ex.formularios
 							else:
 								precio += temp.first().precio
+					Precio_Total += precio
 					listprecio.append([ex,precio])
-				context2 = {'key_reporte_uno':True,'key_reporte_dos':False,'listado':listado,'precio':listprecio}	
+					Listado_Pagos = Abono.objects.filter(operacionmes__empresa__id=empresa)
+					Total_Pago = Abono.objects.filter(operacionmes__empresa__id=empresa).aggregate(Sum('monto'))
+				context2 = {'fecha':str_fecha,'Empresa':Nombre_empresa,'key_reporte_uno':True,'key_reporte_dos':False,'listado':listado,'precio':listprecio,'Precio_Total':Precio_Total,'Listado_Pagos':Listado_Pagos,'Total_Pago':Total_Pago}	
 			else:
-				context2 = {'key_reporte_uno':False,'key_reporte_dos':True}
+				Total_Ingresos = 0
+				Total_Ingresos_Acutal = 0
+				Saldo_General = 0
+				Listado_empresas = Empresa.objects.all()
+				listgeneral = []
+				for Emp in Listado_empresas:
+					listado = Expediente.objects.all().filter(operacionmes__empresa__id=Emp.id,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+					for ex in listado:
+						empresa = ex.operacionmes.empresa.id
+						cobros = ex.cobro.all()
+						precio = 0
+						for c in cobros:
+							temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
+							if temp.first() is not None:
+								if 'tenencia' in c.nombre.lower():
+									precio += temp.first().precio * ex.tenencias
+							#	elif 'firma' in c.nombre.lower():
+							#		precio += temp.first().precio * ex.autenticafirma
+							#	elif 'dpi' in c.nombre.lower():
+							#		precio += temp.first().precio * ex.autenticadpi
+							#	elif 'ingresos' in c.nombre.lower():
+							#		precio += temp.first().precio * ex.constanciaingresos
+							#	elif 'venta' in c.nombre.lower():
+							#		precio += temp.first().precio * ex.formularios
+								else:
+									precio += temp.first().precio
+						Precio_Total += precio
+						T_P = Abono.objects.filter(operacionmes__empresa__id=Emp.id).aggregate(Sum('monto'))
+						if T_P['monto__sum'] is None:
+							Total_Pago = 0
+						else:
+							Total_Pago = T_P['monto__sum']
+						saldo = Precio_Total - Total_Pago
+					Total_Ingresos += Precio_Total
+					Total_Ingresos_Acutal += Total_Pago
+					Saldo_General += saldo
+					
+					listgeneral.append([Emp.nombre,Precio_Total,Total_Pago,saldo])
+					Precio_Total = 0
+					Total_Pago = None
+
+				context2 = {'Saldo_General':Saldo_General,'Ingresos':Total_Ingresos,'TIA':Total_Ingresos_Acutal,'fecha':str_fecha,'Listageneral':listgeneral,'key_reporte_uno':False,'key_reporte_dos':True}
 		else:
 			context2 = {'key_reporte_uno':False,'key_reporte_dos':False}
 
@@ -82,10 +127,10 @@ def sistema(request):
 	empresas = Empresa.objects.all()
 	if request.method == 'POST':
 		id_empresa = request.POST.get("empresa","")
-		str_fecha = request.POST.get("fecha","")
-		fecha = str_fecha.split('-',1)
+		#str_fecha = request.POST.get("fecha","")
+		#fecha = str_fecha.split('-',1)
 		nombre = request.POST.get("nombre","")
-		listado = Expediente.objects.all().filter(cliente__icontains=nombre,operacionmes__empresa__id=id_empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+		listado = Expediente.objects.all().filter(cliente__icontains=nombre,operacionmes__empresa__id=id_empresa)#,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
 		listprecio = []
 		for ex in listado:
 			empresa = ex.operacionmes.empresa.id
@@ -96,14 +141,14 @@ def sistema(request):
 				if temp.first() is not None:
 					if 'tenencia' in c.nombre.lower():
 						precio += temp.first().precio * ex.tenencias
-					elif 'firma' in c.nombre.lower():
-						precio += temp.first().precio * ex.autenticafirma
-					elif 'dpi' in c.nombre.lower():
-						precio += temp.first().precio * ex.autenticadpi
-					elif 'ingresos' in c.nombre.lower():
-						precio += temp.first().precio * ex.constanciaingresos
-					elif 'venta' in c.nombre.lower():
-						precio += temp.first().precio * ex.formularios
+				#	elif 'firma' in c.nombre.lower():
+				#		precio += temp.first().precio * ex.autenticafirma
+				#	elif 'dpi' in c.nombre.lower():
+				#		precio += temp.first().precio * ex.autenticadpi
+				#	elif 'ingresos' in c.nombre.lower():
+				#		precio += temp.first().precio * ex.constanciaingresos
+				#	elif 'venta' in c.nombre.lower():
+				#		precio += temp.first().precio * ex.formularios
 					else:
 						precio += temp.first().precio
 			listprecio.append([ex,precio])

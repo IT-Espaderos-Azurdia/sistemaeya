@@ -12,12 +12,25 @@
 <h1 >
 
   {% if key_reporte_uno %}
-  	<h1 style="text-align: center;">DETALLE DE EXPEDIENTES </h1>
+  	<h1 style="text-align: center;">Detalle De Expedientes De {{ Empresa }} De {{ fecha }}  </h1>
+    
+    <br>
+    
+    <h3><b>Total Deuda: </b> {{ Precio_Total }}</h3>
+    <h3><b>Total Abonado: </b> {% if Total_Pago.monto__sum %} {{ Total_Pago.monto__sum }} {% else %} 0 {% endif %}</h3>
+
+    <br>
+
+    <p>******************************************************************************</p>
+    <p>---------------------------------------------- EXPEDIENTES ---------------------------------------------</p>
+    <p>******************************************************************************</p>
+
   {% for expe in precio %}
 
-  	<p>--------------------------------------------------------------------------------------------------------------</p>
+  	<p>--------------------------------------------------------------------------------------------------------------------</p>
       <p style="text-align: justify;">
         <b>Cliente : </b>  {{expe.0.cliente}} <br>
+        <b># Tenencias : </b> {% if expe.0.tenencias %} {{expe.0.tenencias}} {% else %} -------- {% endif %} <br>
         <b>Total a cobrar : </b>  {{expe.1}} <br>
         <b>Empresa : </b> {{expe.0.operacionmes.empresa}} <br>
         <b>Fecha Pago: </b> {{expe.0.fecha_ingreso_oficina}}  <br>
@@ -45,10 +58,56 @@
       </p>
 
     {% endfor %}
+     <br><br>
+    <p>******************************************************************************</p>
+    <p>-------------------------------------------------- ABONOS -------------------------------------------------</p>
+    <p>******************************************************************************</p>
+
+    <br>
+
+    {% for Abono in Listado_Pagos %}
+    <p>--------------------------------------------------------------------------------------------------------------</p>
+    
+    <b> Monto: </b>  {{ Abono.monto }} <br>
+    <b> Fecha Recibido: </b>  {{ Abono.fecha }} <br>
+    <b> Banco: </b>  {{ Abono.banco }} <br>
+    <b> Tipo De Abono: </b>  {{ Abono.btipo }} <br>
+    <b> Quien Recibio: </b>  {{ Abono.recibio }} <br>
+    <b> Codigo Abono: </b>  {{ Abono.codigo }} <br>
+    <b> Fecha Deposito: </b>  {{ Abono.fechadeposito }} <br>
+    <b> Fecha Del Deposito: </b>  {{ Abono.codigodeposito }} <br>
+
+    {% endfor %}
   
   {% elif key_reporte_dos %}
 
-  	ESTE ES EL REPORTE DOS
+    <h1 style="text-align: center;">Detalle General Operativo De {{ fecha }}  </h1>
+    
+    <br>
+    
+    <h3><b>Total Ingresos Percibidos Hasta La Fecha: </b> <a style="color:red;"> {{ Ingresos }} </a></h3>
+    <h3><b>Total Ingresos Hasta La Fecha: </b> <a style="color:red;"> {{ TIA }} </a></h3>
+    <h3><b>Saldo General: </b> <a style="color:red;"> {{ Saldo_General }} </a></h3>
+    * Del Mes Operativo Actual
+
+    <br><br>
+
+    <table style=" border: 1px solid black; width:100%">
+          <tr>
+              <th style="border: 1px solid black; text-align: center;">EMPRESA</th>
+              <th style="border: 1px solid black; text-align: center;">TOTAL DEUDA</th>
+              <th style="border: 1px solid black; text-align: center;">TOTAL ABONADO</th>
+              <th style="border: 1px solid black; text-align: center;">SALDO</th>
+          </tr>
+        {% for expe in Listageneral %}
+          <tr>
+            <td style="border: 1px solid black; text-align: center;">{{expe.0}}</td>
+            <td style="border: 1px solid black; text-align: center;">{{expe.1}}</td>
+            <td style="border: 1px solid black; text-align: center;">{{expe.2}}</td>
+            <td style="border: 1px solid black; text-align: center;">{{expe.3}}</td>
+          </tr>
+        {% endfor %}
+      </table>  	
 
   {% else %}
 
