@@ -141,7 +141,7 @@ class OperacionMes(models.Model):
     empresa = models.ForeignKey(Empresa,null=False,blank=False,on_delete=models.CASCADE)
     mes = models.PositiveIntegerField(null=False,blank=False,validators=[MinValueValidator(1),MaxValueValidator(12)])
     anio = models.PositiveIntegerField(null=False,blank=False,validators=[MinValueValidator(2016),MaxValueValidator(2300)])
-
+    
     class Meta:
         unique_together =('empresa','mes','anio',)
 
