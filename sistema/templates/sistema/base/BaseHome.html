@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+    
+    <title>Espaderos&Azurdia</title>
+
+    <link class="circle" rel="shortcut icon" href="{% static 'admin/img/ico2.png' %}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="{% static 'admin/css/materialize.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="{% static 'admin/css/style.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
+   
+    
+  </head>
+
+  <body class="grey white">
+
+      <nav  class="grey darken-4 " role="navigation" >
+      <div class="nav-wrapper ">    
+        
+        <a class="brand-logo lime-text text-accent-2 row " >
+          <img class="circle responsive-img  col s3 offset-s5 col l2" src="{% static 'admin/img/ico2.png' %}">  
+        </a>
+        
+        <ul class="right hide-on-med-and-down" >
+          <li>
+            <a class=" waves-effect  lime-text button" href="/">
+              Home
+            </a>
+          </li >
+          <li>
+            <a class=" waves-effect  lime-text dropdown-button" href="#">
+              Nuestra Firma
+            </a>
+          </li >
+          <li>
+            <a class=" waves-effect  lime-text dropdown-button"  href="#">
+              Áreas De Especialización
+            </a>
+          </li >
+          <li>
+            <a class=" waves-effect  lime-text dropdown-button"  href="#">
+              Nuestros Clientes
+            </a>
+          </li >
+          <li>
+            <a class=" waves-effect  lime-text dropdown-button"  href="#">
+              Contáctenos
+            </a>
+          </li >
+          <li>
+            <a class=" waves-effect  lime-text dropdown-button"  data-beloworigin="true" data-activates="menu1">
+              Servicio Web
+            </a>
+          </li >
+          
+        </ul>
+      </div>
+    </nav>
+
+    <ul id="menu1" class="dropdown-content grey darken-4" >
+      <li class="grey darken-4">
+        <a class=" waves-effect red-text" href="{% url 'ExpedienteEmpresa' %}">
+          Empresa
+        </a>    
+        <a class=" waves-effect red-text" href="{% url 'logout' %}">
+          Sistema EyA
+        </a> 
+      </li>
+    </ul>
+
+    {% block content %}
+    
+    {% endblock %}
+
+<!-- 
+     <footer class="footer-copyright black" >
+        <div class="container">
+          <a> &copy &reg Espaderos &  Azurdia - Liciencia MIT </a>
+        </div>
+        
+          Todos los derechos reservados "Mikhail Chopen", Powered by http:/Serialize.com Licencia MIT
+     
+    </footer>   -->
+
+    <!--  Scripts-->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="{% static 'admin/js/materialize.js' %}"></script>
+    <script src="{% static 'admin/js/initialization_custum.js' %}"></script>
+    
+    
+  </body>
+</html>

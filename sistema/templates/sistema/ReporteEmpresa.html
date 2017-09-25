@@ -1,0 +1,60 @@
+{% extends 'sistema/base/base_cliente.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="row" style="margin-bottom: 0px;">
+  
+  <div class="row white" >
+    
+    <div class="center blue-grey darken-4 s12 l12 white-text z-depth-3">
+      <h4 class="">
+        Generación De Reportes
+      </h4>  
+    </div>
+
+    <div class=" col l12 s12">
+    <div class="row">
+
+      
+    <br/>
+    
+      <div class="col s12 l12  ">
+
+        <form method="post">{% csrf_token %}
+
+          <div class="input-field col l4 s12 ">
+            <i class="material-icons prefix">account_circle</i>
+            <input id="user" type="text" class="form-control validate" name="username" required="required">
+            <label for="user" data-error="Error" data-success="Ok">Usuario</label>
+          </div>
+
+          <div class="input-field col l3 s12 ">
+            <i class="material-icons prefix">security</i>
+            <input id="password" type="password" class="form-control validate" name="password" pattern=".{8,}" required="required">
+            <label for="password" data-error="Error" data-success="Ok">Contraseña</label>
+          </div>       
+          
+          <div class=" row col s12 l3  ">
+            <label class="col s12 l12" for="fecha">Mes y Año De Operacion</label><br>
+            <input id="fecha" name="fecha" type="month" class=" col s12 l12 validate " required="required">
+          </div>
+         
+         <br>
+          <button class="btn col l2 s12 waves-effect waves-light pink white-text z-depth-1" formtarget='_blank' type="submit">
+            Generar
+          </button>
+        </form>
+      </div>
+
+      
+
+    </div>
+    
+    </div>
+
+  </div>
+</div>
+
+
+{% endblock content %}

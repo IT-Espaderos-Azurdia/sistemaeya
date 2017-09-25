@@ -14,6 +14,11 @@ def home(request):
 	template = "sistema/home.html"
 	return render(request,template)
 
+def HomeWebSite(request):
+
+	template = "sistema/home_presentacion.html"
+	return render(request,template)
+
 def login(request):
 
 	template = "sistema/login.html"
@@ -28,8 +33,9 @@ def sistema_reporte(request):
 		Nombre_empresa = Empresa.objects.only('nombre').get(id=empresa)
 		op_mes = OperacionMes.objects.filter(empresa=empresa,mes=fecha[1],anio=fecha[0])
 		Precio_Total = 0
-		if op_mes.first() is not None:
-			if reporte == '0':
+
+		if reporte == '0':
+			if op_mes.first() is not None:
 				listado = Expediente.objects.all().filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
 				listprecio = []
 				for ex in listado:
@@ -41,67 +47,55 @@ def sistema_reporte(request):
 						if temp.first() is not None:
 							if 'tenencia' in c.nombre.lower():
 								precio += temp.first().precio * ex.tenencias
-						#	elif 'firma' in c.nombre.lower():
-						#		precio += temp.first().precio * ex.autenticafirma
-						#	elif 'dpi' in c.nombre.lower():
-						#		precio += temp.first().precio * ex.autenticadpi
-						#	elif 'ingresos' in c.nombre.lower():
-						#		precio += temp.first().precio * ex.constanciaingresos
-						#	elif 'venta' in c.nombre.lower():
-						#		precio += temp.first().precio * ex.formularios
 							else:
 								precio += temp.first().precio
 					Precio_Total += precio
 					listprecio.append([ex,precio])
-					Listado_Pagos = Abono.objects.filter(operacionmes__empresa__id=empresa)
-					Total_Pago = Abono.objects.filter(operacionmes__empresa__id=empresa).aggregate(Sum('monto'))
+					Listado_Pagos = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+					Total_Pago = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1]).aggregate(Sum('monto'))
 				context2 = {'fecha':str_fecha,'Empresa':Nombre_empresa,'key_reporte_uno':True,'key_reporte_dos':False,'listado':listado,'precio':listprecio,'Precio_Total':Precio_Total,'Listado_Pagos':Listado_Pagos,'Total_Pago':Total_Pago}	
 			else:
-				Total_Ingresos = 0
-				Total_Ingresos_Acutal = 0
-				Saldo_General = 0
-				Listado_empresas = Empresa.objects.all()
-				listgeneral = []
-				for Emp in Listado_empresas:
-					listado = Expediente.objects.all().filter(operacionmes__empresa__id=Emp.id,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
-					for ex in listado:
-						empresa = ex.operacionmes.empresa.id
-						cobros = ex.cobro.all()
-						precio = 0
-						for c in cobros:
-							temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
-							if temp.first() is not None:
-								if 'tenencia' in c.nombre.lower():
-									precio += temp.first().precio * ex.tenencias
-							#	elif 'firma' in c.nombre.lower():
-							#		precio += temp.first().precio * ex.autenticafirma
-							#	elif 'dpi' in c.nombre.lower():
-							#		precio += temp.first().precio * ex.autenticadpi
-							#	elif 'ingresos' in c.nombre.lower():
-							#		precio += temp.first().precio * ex.constanciaingresos
-							#	elif 'venta' in c.nombre.lower():
-							#		precio += temp.first().precio * ex.formularios
-								else:
-									precio += temp.first().precio
-						Precio_Total += precio
-						T_P = Abono.objects.filter(operacionmes__empresa__id=Emp.id).aggregate(Sum('monto'))
-						if T_P['monto__sum'] is None:
-							Total_Pago = 0
-						else:
-							Total_Pago = T_P['monto__sum']
-						saldo = Precio_Total - Total_Pago
-					Total_Ingresos += Precio_Total
-					Total_Ingresos_Acutal += Total_Pago
-					Saldo_General += saldo
-					
-					listgeneral.append([Emp.nombre,Precio_Total,Total_Pago,saldo])
-					Precio_Total = 0
-					Total_Pago = None
-
-				context2 = {'Saldo_General':Saldo_General,'Ingresos':Total_Ingresos,'TIA':Total_Ingresos_Acutal,'fecha':str_fecha,'Listageneral':listgeneral,'key_reporte_uno':False,'key_reporte_dos':True}
+				context2 = {'key_reporte_uno':False,'key_reporte_dos':False}
 		else:
-			context2 = {'key_reporte_uno':False,'key_reporte_dos':False}
-
+			Total_Ingresos = 0
+			Total_Ingresos_Acutal = 0
+			Saldo_General = 0
+			Listado_empresas = Empresa.objects.all()
+			listgeneral = []
+			for Emp in Listado_empresas:
+				listado = Expediente.objects.all().filter(operacionmes__empresa__id=Emp.id,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+				precio = 0
+				Precio_Total = 0
+				saldo = 0
+				for ex in listado:
+					empresa = ex.operacionmes.empresa.id
+					cobros = ex.cobro.all()
+					precio = 0
+					saldo = 0
+					for c in cobros:
+						temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
+						if temp.first() is not None:
+							if 'tenencia' in c.nombre.lower():
+								precio += temp.first().precio * ex.tenencias
+							else:
+								precio += temp.first().precio
+					Precio_Total += precio
+					T_P = Abono.objects.filter(operacionmes__empresa__id=Emp.id,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1]).aggregate(Sum('monto'))
+					if T_P['monto__sum'] is None:
+						Total_Pago = 0
+					else:
+						Total_Pago = T_P['monto__sum']
+					saldo = Precio_Total - Total_Pago
+				Total_Ingresos += Precio_Total
+				if Total_Pago is None:
+						Total_Pago = 0
+				Total_Ingresos_Acutal += Total_Pago
+				Saldo_General += saldo
+				
+				listgeneral.append([Emp.nombre,Precio_Total,Total_Pago,saldo])
+				Precio_Total = 0
+				Total_Pago = None
+			context2 = {'Saldo_General':Saldo_General,'Ingresos':Total_Ingresos,'TIA':Total_Ingresos_Acutal,'fecha':str_fecha,'Listageneral':listgeneral,'key_reporte_uno':False,'key_reporte_dos':True}
 
 		html_string = render_to_string('sistema/reportes/reporte_uno.html',context2)
 
@@ -117,6 +111,65 @@ def sistema_reporte(request):
 
 	else:
 		template = 'sistema/reportes.html'
+		reportes = ['Reporte detalle','Reporte general de estado']
+		empresas = Empresa.objects.all()
+		context = {'empresas':empresas,'reportes':reportes}
+		return render(request,template,context)
+
+def ReporteEmpresa(request):
+	if request.method == 'POST':
+		
+		str_fecha = request.POST.get("fecha","")
+		usuario = request.POST.get("username","")
+		password = request.POST.get("password","")
+
+		fecha = str_fecha.split('-',1)
+
+		try:
+			EmpresaUsuario = Empresa.objects.get(usuario=usuario,password=password)
+			empresa = EmpresaUsuario.id
+			Nombre_empresa = Empresa.objects.only('nombre').get(id=empresa)
+		except Empresa.DoesNotExist:
+			empresa = -1
+
+		op_mes = OperacionMes.objects.filter(empresa=empresa,mes=fecha[1],anio=fecha[0])
+		Precio_Total = 0
+		if op_mes.first() is not None:
+			listado = Expediente.objects.all().filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+			listprecio = []
+			for ex in listado:
+				empresa = ex.operacionmes.empresa.id
+				cobros = ex.cobro.all()
+				precio = 0
+				for c in cobros:
+					temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
+					if temp.first() is not None:
+						if 'tenencia' in c.nombre.lower():
+							precio += temp.first().precio * ex.tenencias
+						else:
+							precio += temp.first().precio
+				Precio_Total += precio
+				listprecio.append([ex,precio])
+				Listado_Pagos = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+				Total_Pago = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1]).aggregate(Sum('monto'))
+			context2 = {'fecha':str_fecha,'Empresa':Nombre_empresa,'key_reporte_uno':True,'key_reporte_dos':False,'listado':listado,'precio':listprecio,'Precio_Total':Precio_Total,'Listado_Pagos':Listado_Pagos,'Total_Pago':Total_Pago}	
+		else:
+			context2 = {'key_reporte_uno':False,'key_reporte_dos':False}
+		
+		html_string = render_to_string('sistema/reportes/reporte_uno.html',context2)
+
+		html = HTML(string=html_string)
+		namefile = "reporte_uno.pdf"
+		html.write_pdf(target=settings.MEDIA_ROOT+'/'+namefile)
+
+		f = open(settings.MEDIA_ROOT+'/'+namefile,"rb")
+		response = HttpResponse(FileWrapper(f), content_type='application/pdf')
+		response ['Content-Disposition'] = 'inline; filename='+os.path.basename(namefile)
+		f.close()
+		return response
+
+	else:
+		template = 'sistema/ReporteEmpresa.html'
 		reportes = ['Reporte detalle','Reporte general de estado']
 		empresas = Empresa.objects.all()
 		context = {'empresas':empresas,'reportes':reportes}
@@ -157,6 +210,53 @@ def sistema(request):
 	else:
 		context = {'empresas':empresas}
 		return render(request,template, context)		
+
+def ExpedienteEmpresa(request):
+	template = "sistema/EmpresaExpedientes.html"
+	empresas = Empresa.objects.all()
+	usuario = ""
+	password = ""
+	if request.method == 'POST':
+
+		usuario = request.POST.get("username","")
+		password = request.POST.get("password","")
+		
+		try:
+			EmpresaUsuario = Empresa.objects.get(usuario=usuario,password=password)
+			id_empresa = EmpresaUsuario.id
+			usuario = EmpresaUsuario.usuario
+			password = EmpresaUsuario.password
+		except Empresa.DoesNotExist:
+			id_empresa = -1
+
+		nombre = request.POST.get("nombre","")
+		listado = Expediente.objects.all().filter(cliente__icontains=nombre,operacionmes__empresa__id=id_empresa)
+		listprecio = []
+		for ex in listado:
+			empresa = ex.operacionmes.empresa.id
+			cobros = ex.cobro.all()
+			precio = 0
+			for c in cobros:
+				temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
+				if temp.first() is not None:
+					if 'tenencia' in c.nombre.lower():
+						precio += temp.first().precio * ex.tenencias
+				#	elif 'firma' in c.nombre.lower():
+				#		precio += temp.first().precio * ex.autenticafirma
+				#	elif 'dpi' in c.nombre.lower():
+				#		precio += temp.first().precio * ex.autenticadpi
+				#	elif 'ingresos' in c.nombre.lower():
+				#		precio += temp.first().precio * ex.constanciaingresos
+				#	elif 'venta' in c.nombre.lower():
+				#		precio += temp.first().precio * ex.formularios
+					else:
+						precio += temp.first().precio
+			listprecio.append([ex,precio])
+		context = {'listado':listado,'listp':listprecio,'empresas':empresas,'username':usuario,'password':password}
+		return render(request,template,context)
+	else:
+		context = {'empresas':empresas,'username':usuario,'password':password}
+		return render(request,template, context)
 
 def sistema_pago(request):
 	template = "sistema/sistema_pago.html"

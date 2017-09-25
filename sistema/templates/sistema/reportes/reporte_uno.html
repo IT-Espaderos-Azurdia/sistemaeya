@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-
+{% load staticfiles %}
 <html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -7,7 +7,7 @@
         
   </head>
 
-  <body >
+  <body > 
 
 <h1 >
 
@@ -85,7 +85,7 @@
     
     <br>
     
-    <h3><b>Total Ingresos Percibidos Hasta La Fecha: </b> <a style="color:red;"> {{ Ingresos }} </a></h3>
+    <h3><b>Total Ingresos A Percibir En El Mes: </b> <a style="color:red;"> {{ Ingresos }} </a></h3>
     <h3><b>Total Ingresos Hasta La Fecha: </b> <a style="color:red;"> {{ TIA }} </a></h3>
     <h3><b>Saldo General: </b> <a style="color:red;"> {{ Saldo_General }} </a></h3>
     * Del Mes Operativo Actual
@@ -111,7 +111,7 @@
 
   {% else %}
 
-    	EL MES DE OPERACION NO ES VALIDO!
+    	Mes Sin Expedientes Registrados!
 
   {% endif %}
 
