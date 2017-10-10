@@ -24,6 +24,7 @@ class ExpedienteForm(forms.ModelForm):
 		    'descripcion_estatus',
 		    'docfile',
 		    'cliente',
+		    'numeroexpe',
 		]
 
 		labels = {
@@ -44,6 +45,7 @@ class ExpedienteForm(forms.ModelForm):
 		    'descripcion_estatus': 'Descripcion del estatus',
 		    'docfile': 'Seleccione archivo',
 		    'cliente': 'Nombre cliente',
+		    'numeroexpe': 'Numero Expediente',
 		}
 
 		widgets = {
@@ -63,6 +65,7 @@ class ExpedienteForm(forms.ModelForm):
 		    'estatus': forms.Select(attrs={'class': 'validate'},choices=(('ok','ok'),('detenida','detenida'))),
 		    'descripcion_estatus': forms.TextInput(attrs={'class':'validate'}),
 		    'cliente': forms.TextInput(attrs={'class':'validate'}),
+		    'numeroexpe': forms.NumberInput(attrs={'class':'validate'}),
 		}
 
 class PagoForm(forms.ModelForm):

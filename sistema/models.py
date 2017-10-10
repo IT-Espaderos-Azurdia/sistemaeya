@@ -176,6 +176,7 @@ class Expediente(models.Model):
     estatus = models.CharField(null=False,blank=False,max_length=10)
     descripcion_estatus = models.CharField(null=True,blank=True,max_length=200)
     docfile = models.FileField(upload_to='archivos/',null=True,blank=True)
+    numeroexpe = models.PositiveIntegerField(null=True,blank=True) #Numero Expediente
 
 
 

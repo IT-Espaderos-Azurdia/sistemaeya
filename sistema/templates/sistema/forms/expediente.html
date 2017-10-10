@@ -40,17 +40,24 @@
         </div>
         {% endif %}
 
-        <div class="row col l9 s12">
+        <div class="row col l8 s12">
           <div class="input-field">
             {{form.cliente}}
             <label for="{{form.cliente.id}}">{{form.cliente.label}}</label>
           </div>          
         </div>
 
-        <div class="row col l3 s12">
+        <div class="row col l2 s12">
           <div class="input-field">
             {{form.estatus}}
             <label for="{{form.estatus.id}}">{{form.estatus.label}}</label>
+          </div>          
+        </div>
+
+        <div class="row col l2 s12">
+          <div class="input-field">
+            {{form.numeroexpe}}
+            <label for="{{form.numeroexpe.id}}">{{form.numeroexpe.label}}</label>
           </div>          
         </div>
 
@@ -60,6 +67,8 @@
             <label for="{{form.tenencias.id}}">{{form.tenencias.label}}</label>
           </div>          
         </div>
+
+        
 <!--
         <div class="row col l4 s12">
           <div class="input-field">
