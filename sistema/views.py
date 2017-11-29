@@ -385,6 +385,8 @@ def update_pago(request,id_pago):
 	context = {'form':form,'empresas':empresas,'key':False}
 	return render(request,template,context)
 
+
+
 # --------------------------------------------------------------------
 # -------------------- FUNCIONES CRUD EMPRESA ------------------------
 # --------------------------------------------------------------------
