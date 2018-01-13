@@ -33,11 +33,13 @@ def sistema_reporte(request):
 		Nombre_empresa = Empresa.objects.only('nombre').get(id=empresa)
 		op_mes = OperacionMes.objects.filter(empresa=empresa,mes=fecha[1],anio=fecha[0])
 		Precio_Total = 0
-
+		Total_Pago = 0
+		Listado_Pagos = None
 		if reporte == '0':
 			if op_mes.first() is not None:
 				listado = Expediente.objects.all().filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
 				listprecio = []
+
 				for ex in listado:
 					empresa = ex.operacionmes.empresa.id
 					cobros = ex.cobro.all()
@@ -53,7 +55,9 @@ def sistema_reporte(request):
 					listprecio.append([ex,precio])
 					Listado_Pagos = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
 					Total_Pago = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1]).aggregate(Sum('monto'))
-				context2 = {'fecha':str_fecha,'Empresa':Nombre_empresa,'key_reporte_uno':True,'key_reporte_dos':False,'listado':listado,'precio':listprecio,'Precio_Total':Precio_Total,'Listado_Pagos':Listado_Pagos,'Total_Pago':Total_Pago}	
+
+				context2 = {'fecha':str_fecha,'Empresa':Nombre_empresa,'key_reporte_uno':True,'key_reporte_dos':False,'listado':listado,'precio':listprecio,'Precio_Total':Precio_Total,'Listado_Pagos':Listado_Pagos,'Total_Pago':Total_Pago}
+				
 			else:
 				context2 = {'key_reporte_uno':False,'key_reporte_dos':False}
 		else:
@@ -134,6 +138,8 @@ def ReporteEmpresa(request):
 
 		op_mes = OperacionMes.objects.filter(empresa=empresa,mes=fecha[1],anio=fecha[0])
 		Precio_Total = 0
+		Total_Pago = 0
+		Listado_Pagos = None
 		if op_mes.first() is not None:
 			listado = Expediente.objects.all().filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
 			listprecio = []
@@ -339,6 +345,21 @@ def update_expediente(request,id_expediente):
 	template = "sistema/forms/expediente.html"
 	context = {'form':form,'key_Form':True,'Key_empresa':False}
 	return render(request,template,context)
+
+# Funcion Eliminar Expediente
+def eliminar_expediente(request,id_expediente):
+	if Expediente.objects.all().filter(id=id_expediente).exists():
+		expediente = Expediente.objects.get(id=id_expediente)
+		if request.method == 'POST':
+			expediente.docfile.delete()
+			expediente.delete()
+			return redirect('sistema')
+		template = "sistema/eliminar/expediente.html"
+		context = {'expediente':expediente}
+		return render(request,template,context)
+	else:
+		return redirect('sistema')
+
 
 # --------------------------------------------------------------------
 # --------------------- FUNCIONES CRUD PAGO --------------------------
