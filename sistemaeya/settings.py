@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '7oe9y9*+k94u9q(z9@_q*elj8pevy=y3@aofl=j(a+u#@l!cv8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['67.205.143.105','127.0.0.1','192.168.0.12','espaderosyazurdia.gt','www.espaderosyazurdia.gt']
 

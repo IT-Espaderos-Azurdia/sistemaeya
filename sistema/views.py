@@ -123,6 +123,7 @@ def sistema_reporte(request):
 def ReporteEmpresa(request):
 	if request.method == 'POST':
 		
+		# ,-@VO4ZO%YoFj[^t
 
 		str_fecha = request.POST.get("fecha","")
 		usuario = request.POST.get("username","")
