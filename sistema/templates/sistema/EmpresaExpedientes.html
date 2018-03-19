@@ -22,14 +22,19 @@
           <input id="nombre" name="nombre" type="text" class="validate" required="required">
           <label for="nombre">Nombre</label>
         </div>
+        
+        <div class="col s12 l2 ">
+          <label for="fecha">Mes y Año</label> <br>
+          <input id="fecha" name="fecha" type="month" class="validate " required="required">
+        </div>
 
-        <div class="input-field col l3 s12">
+        <div class="input-field col l2 s12">
             <i class="material-icons prefix">account_circle</i>
             <input id="user" type="text" class="form-control validate" name="username" required="required" value={{username}}>
             <label for="user" data-error="Error" data-success="Ok">Usuario</label>
           </div>
 
-          <div class="input-field col l3 s12">
+          <div class="input-field col l2 s12">
             <i class="material-icons prefix">security</i>
             <input id="password" type="password" class="form-control validate" name="password" pattern=".{8,}" required="required" value={{password}}>
             <label for="password" data-error="Error" data-success="Ok">Contraseña</label>
@@ -43,6 +48,13 @@
 
       </form>
     </div>
+
+    {% if Error %}
+      <div class="collection ">
+         <a href="#" class="collection-item white-text black"><span class="badge red white-text">Error</span>Credenciales invalidas! Verifique su contraseña y usuario.</a>
+      </div>
+    {% endif %}
+
      {% if listado %}
       <table class="highlight responsive-table col s12 l12" id="tabla">
         <thead>
@@ -81,6 +93,7 @@
     </div>
   </div>
 </div>
+
 
 {% for expe in listp %}
 

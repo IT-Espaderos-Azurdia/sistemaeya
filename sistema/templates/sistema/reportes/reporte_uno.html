@@ -34,7 +34,7 @@
         <b># Tenencias : </b> {% if expe.0.tenencias %} {{expe.0.tenencias}} {% else %} -------- {% endif %} <br>
         <b>Total a cobrar : </b>  {{expe.1}} <br>
         <b>Empresa : </b> {{expe.0.operacionmes.empresa}} <br>
-        <b>Fecha Pago: </b> {{expe.0.fecha_ingreso_oficina}}  <br>
+        <b>Fecha Ingreso Oficina: </b> {{expe.0.fecha_ingreso_oficina}}  <br>
         <b>Fecha Ingreso Digecam : </b> {% if expe.0.fecha_ingreso_digecam %}  {{expe.0.fecha_ingreso_digecam}} {% else %} -------- {% endif %} <br>
         <b>Fecha cita : </b>  {% if expe.0.fecha_cita %} {{expe.0.fecha_cita}} {% else %} -------- {% endif %} <br>
         <b>Fecha pago : </b>  {% if expe.0.fecha_pago %} {{expe.0.fecha_pago}} {% else %} -------- {% endif %} <br>

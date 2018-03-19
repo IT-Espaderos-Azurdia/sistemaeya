@@ -41,13 +41,19 @@
           </div>
          
          <br>
-          <button class="btn col l2 s12 waves-effect waves-light pink white-text z-depth-1" formtarget='_blank' type="submit">
+          <button class="btn col l2 s12 waves-effect waves-light pink white-text z-depth-1"  type="submit">
             Generar
           </button>
         </form>
       </div>
 
+      {% if Error %}
+      <div id="mensaje" class="collection ">
+         <a href="#" class="collection-item white-text black"><span class="badge red white-text">Notificacion</span>{{ErrorTipo}}</a>
+      </div>
+    {% endif %}
       
+
 
     </div>
     
@@ -55,6 +61,15 @@
 
   </div>
 </div>
+
+<script type="text/javascript">
+    setTimeout(mifuncion3,6000);
+
+  function mifuncion3(){
+    document.getElementById('mensaje').style.display = 'none';
+  }
+
+</script>
 
 
 {% endblock content %}

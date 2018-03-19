@@ -17,18 +17,17 @@
     <div class="row">
       <form method="post">{% csrf_token %}
       <div class="col s12 l12 ">
-        <div class="input-field col s12 l6 ">
+        <div class="input-field col s12 l4 ">
           <i class="material-icons prefix">search</i>
           <input id="nombre" name="nombre" type="text" class="validate" required="required">
           <label for="nombre">Nombre</label>
         </div>
-      
-      <!--  
+            
         <div class=" row col s12 l2 ">
-          <label for="fecha">Mes y Año</label>
+          <label for="fecha">Mes y Año</label> <br>
           <input id="fecha" name="fecha" type="month" class="validate " required="required">
         </div>
-      -->
+      
         <div class="row input-field col  s12 l4">
           <select id="empresa" name="empresa" required="required">
             {% for empresa in empresas %}

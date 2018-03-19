@@ -3,7 +3,7 @@ from django.core.files.storage import FileSystemStorage
 from django.template.loader import render_to_string
 from sistema.forms import CobroForm, EmpresaForm, CobroEmpresaForm, ExpedienteForm, PagoForm
 from sistema.models import Cobro, Empresa, CobroEmpresa, Expediente, OperacionMes, CobroEmpresa, Abono
-import datetime, os.path
+import datetime, os.path, csv
 from weasyprint import HTML
 from django.conf import settings
 from wsgiref.util import FileWrapper
@@ -123,6 +123,7 @@ def sistema_reporte(request):
 def ReporteEmpresa(request):
 	if request.method == 'POST':
 		
+
 		str_fecha = request.POST.get("fecha","")
 		usuario = request.POST.get("username","")
 		password = request.POST.get("password","")
@@ -136,49 +137,74 @@ def ReporteEmpresa(request):
 		except Empresa.DoesNotExist:
 			empresa = -1
 
-		op_mes = OperacionMes.objects.filter(empresa=empresa,mes=fecha[1],anio=fecha[0])
-		Precio_Total = 0
-		Total_Pago = 0
-		Listado_Pagos = None
-		if op_mes.first() is not None:
-			listado = Expediente.objects.all().filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
-			listprecio = []
-			for ex in listado:
-				empresa = ex.operacionmes.empresa.id
-				cobros = ex.cobro.all()
-				precio = 0
-				for c in cobros:
-					temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
-					if temp.first() is not None:
-						if 'tenencia' in c.nombre.lower():
-							precio += temp.first().precio * ex.tenencias
-						else:
-							precio += temp.first().precio
-				Precio_Total += precio
-				listprecio.append([ex,precio])
-				Listado_Pagos = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
-				Total_Pago = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1]).aggregate(Sum('monto'))
-			context2 = {'fecha':str_fecha,'Empresa':Nombre_empresa,'key_reporte_uno':True,'key_reporte_dos':False,'listado':listado,'precio':listprecio,'Precio_Total':Precio_Total,'Listado_Pagos':Listado_Pagos,'Total_Pago':Total_Pago}	
+		if empresa == -1:
+			template = 'sistema/ReporteEmpresa.html'
+			Error = 1
+			ErrorTipo = "Credenciales invalidas! Verifique su contraseña y usuario."
+			context = {'ErrorTipo':ErrorTipo,'Error':Error,'username':usuario,'password':password}
+			return render(request,template,context)
 		else:
-			context2 = {'key_reporte_uno':False,'key_reporte_dos':False}
-		
-		html_string = render_to_string('sistema/reportes/reporte_uno.html',context2)
+			response = HttpResponse(content_type='text/csv')
+			NombreReporte = "["+EmpresaUsuario.nombre+"]Gestion Operativa "+str_fecha+".csv"
+			response['Content-Disposition'] = 'attachment; filename='+NombreReporte
+			writer = csv.writer(response)
 
-		html = HTML(string=html_string)
-		namefile = "reporte_uno.pdf"
-		html.write_pdf(target=settings.MEDIA_ROOT+'/'+namefile)
+			op_mes = OperacionMes.objects.filter(empresa=empresa,mes=fecha[1],anio=fecha[0])
+			Precio_Total = 0
+			Total_Pago = 0
+			Listado_Pagos = None
+			if op_mes.first() is not None:
+				#writer.writerow(['Nombre', 'Numero Expediente','No. Tenencias','Total a Pagar Q','Fecha Ingreso Oficina','Fecha Ingreso Digecam','Fecha Cita','Fecha Pago','Fecha Entrega','Quien Entrego','Quien Recibio','Estatus','cobros','Descripcion Estado'])
+				writer.writerow(['Numero Expediente','Nombre','Fecha Ingreso Oficina','Fecha Entrega','Estatus','cobros','Total a Pagar Q'])
+				listado = Expediente.objects.all().filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+				listprecio = []
+				for ex in listado:
+					empresa = ex.operacionmes.empresa.id
+					cobros = ex.cobro.all()
+					precio = 0
+					CobroDescripcion = "-"
+					for c in cobros:
+						CobroDescripcion += c.nombre+"-"
+						temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
+						if temp.first() is not None:
+							if 'tenencia' in c.nombre.lower():
+								precio += temp.first().precio * ex.tenencias
+							else:
+								precio += temp.first().precio
+					#writer.writerow([ex.cliente, ex.numeroexpe,ex.tenencias,precio,ex.fecha_ingreso_oficina,ex.fecha_ingreso_digecam,ex.fecha_cita,ex.fecha_pago,ex.fecha_entrega,ex.entrego,ex.recibio,ex.estatus,CobroDescripcion,ex.descripcion_estatus])
+					writer.writerow([ex.numeroexpe,ex.cliente,ex.fecha_ingreso_oficina,ex.fecha_entrega,ex.estatus,CobroDescripcion,precio])
+					#Precio_Total += precio
+					#listprecio.append([ex,precio])
+					#Listado_Pagos = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+					#Total_Pago = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1]).aggregate(Sum('monto'))
+				#context2 = {'fecha':str_fecha,'Empresa':Nombre_empresa,'key_reporte_uno':True,'key_reporte_dos':False,'listado':listado,'precio':listprecio,'Precio_Total':Precio_Total,'Listado_Pagos':Listado_Pagos,'Total_Pago':Total_Pago}	
+				return response
+			else:
+				template = 'sistema/ReporteEmpresa.html'
+				Error = 1
+				ErrorTipo = "Mes operativo sin gestiones."
+				context = {'ErrorTipo':ErrorTipo,'Error':Error,'username':usuario,'password':password}
+				return render(request,template,context)
+			"""
+			html_string = render_to_string('sistema/reportes/reporte_uno.html',context2)
 
-		f = open(settings.MEDIA_ROOT+'/'+namefile,"rb")
-		response = HttpResponse(FileWrapper(f), content_type='application/pdf')
-		response ['Content-Disposition'] = 'inline; filename='+os.path.basename(namefile)
-		f.close()
-		return response
+			html = HTML(string=html_string)
+			namefile = "reporte_uno.pdf"
+			html.write_pdf(target=settings.MEDIA_ROOT+'/'+namefile)
+
+			f = open(settings.MEDIA_ROOT+'/'+namefile,"rb")
+			response = HttpResponse(FileWrapper(f), content_type='application/pdf')
+			response ['Content-Disposition'] = 'attachment; filename='+os.path.basename(namefile)
+			f.close()
+
+			return response"""
 
 	else:
 		template = 'sistema/ReporteEmpresa.html'
 		reportes = ['Reporte detalle','Reporte general de estado']
 		empresas = Empresa.objects.all()
-		context = {'empresas':empresas,'reportes':reportes}
+		Error = 0
+		context = {'empresas':empresas,'reportes':reportes,'Error':Error}
 		return render(request,template,context)
 
 def sistema(request):
@@ -186,10 +212,10 @@ def sistema(request):
 	empresas = Empresa.objects.all()
 	if request.method == 'POST':
 		id_empresa = request.POST.get("empresa","")
-		#str_fecha = request.POST.get("fecha","")
-		#fecha = str_fecha.split('-',1)
+		str_fecha = request.POST.get("fecha","")
+		fecha = str_fecha.split('-',1)
 		nombre = request.POST.get("nombre","")
-		listado = Expediente.objects.all().filter(cliente__icontains=nombre,operacionmes__empresa__id=id_empresa)#,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+		listado = Expediente.objects.all().filter(cliente__icontains=nombre,operacionmes__empresa__id=id_empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1]).order_by('-operacionmes')#,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
 		listprecio = []
 		for ex in listado:
 			empresa = ex.operacionmes.empresa.id
@@ -222,11 +248,14 @@ def ExpedienteEmpresa(request):
 	empresas = Empresa.objects.all()
 	usuario = ""
 	password = ""
+	Error = 0
 	if request.method == 'POST':
 
 		usuario = request.POST.get("username","")
 		password = request.POST.get("password","")
-		
+		str_fecha = request.POST.get("fecha","")
+		fecha = str_fecha.split('-',1)
+
 		try:
 			EmpresaUsuario = Empresa.objects.get(usuario=usuario,password=password)
 			id_empresa = EmpresaUsuario.id
@@ -234,9 +263,10 @@ def ExpedienteEmpresa(request):
 			password = EmpresaUsuario.password
 		except Empresa.DoesNotExist:
 			id_empresa = -1
+			Error = 1
 
 		nombre = request.POST.get("nombre","")
-		listado = Expediente.objects.all().filter(cliente__icontains=nombre,operacionmes__empresa__id=id_empresa)
+		listado = Expediente.objects.all().filter(cliente__icontains=nombre,operacionmes__empresa__id=id_empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1]).order_by('-operacionmes')
 		listprecio = []
 		for ex in listado:
 			empresa = ex.operacionmes.empresa.id
@@ -258,10 +288,10 @@ def ExpedienteEmpresa(request):
 					else:
 						precio += temp.first().precio
 			listprecio.append([ex,precio])
-		context = {'listado':listado,'listp':listprecio,'empresas':empresas,'username':usuario,'password':password}
+		context = {'Error':Error,'listado':listado,'listp':listprecio,'empresas':empresas,'username':usuario,'password':password}
 		return render(request,template,context)
 	else:
-		context = {'empresas':empresas,'username':usuario,'password':password}
+		context = {'Error':Error,'empresas':empresas,'username':usuario,'password':password}
 		return render(request,template, context)
 
 def sistema_pago(request):
@@ -547,3 +577,6 @@ def error_404(request):
 # ---------------------- FUNCIONES NO RENDER  ------------------------
 # --------------------------------------------------------------------
 
+def ErrorAcceso(request):
+	template = "sistema/errores/ErrorAcceso.html"
+	return render(request,template)

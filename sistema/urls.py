@@ -16,6 +16,7 @@ urlpatterns = [
 	url(r'^test/$', views.HomeWebSite, name='HomeWebSite'),
 
 	url(r'^empresa/reporte/$', views.ReporteEmpresa, name='ReporteEmpresa'),
+	url(r'^empresa/reporte/error/$', views.ErrorAcceso, name='ErrorAcceso'),
 	url(r'^empresa/expediente/$', views.ExpedienteEmpresa, name='ExpedienteEmpresa'),
 	url(r'^eliminar_expediente/(?P<id_expediente>\d+)/$', login_required(views.eliminar_expediente), name='eliminar_expediente'),
 	url(r'^sistema/reportes/$', login_required(views.sistema_reporte), name='sistema_reporte'),

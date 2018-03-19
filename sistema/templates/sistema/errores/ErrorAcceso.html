@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+    
+    <title>Espaderos&Azurdia</title>
+
+    <link class="circle" rel="shortcut icon" href="{% static 'admin/img/ico2.png' %}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="{% static 'admin/css/materialize.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="{% static 'admin/css/style.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
+   
+    
+  </head>
+
+  <body class="grey white">
+
+      <nav  class="grey darken-4 " role="navigation" >
+      <div class="nav-wrapper ">    
+        
+        <a class="brand-logo lime-text text-accent-2 row " >
+          <img class="circle responsive-img  col s3 offset-s5 col l2" src="{% static 'admin/img/ico2.png' %}">  
+        </a>
+        
+    </nav>
+
+    <div class="row white" >
+      <div class="center red darken-4 s12 l12 white-text z-depth-3">
+        <h4 class="">
+          ERROR
+        </h4>  
+      </div>
+      <div class="center black s12 l12 white-text z-depth-3">
+        <h5 class="">
+          Credenciales incorrectas!, verifique que su contraseña o su usuario esten correctamante escritos
+        </h4>  
+      </div>
+
+       <div class="row center">
+          <div class="col l4 s8 offset-l4 offset-s2"><img class="circle responsive-img" src="{% static 'admin/img/ico2.png' %}"></div>
+      </div>
+
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="{% static 'admin/js/materialize.js' %}"></script>
+    <script src="{% static 'admin/js/initialization_custum.js' %}"></script>
+    
+    
+  </body>
+</html>
