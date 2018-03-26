@@ -3,7 +3,7 @@ from django.core.files.storage import FileSystemStorage
 from django.template.loader import render_to_string
 from sistema.forms import CobroForm, EmpresaForm, CobroEmpresaForm, ExpedienteForm, PagoForm
 from sistema.models import Cobro, Empresa, CobroEmpresa, Expediente, OperacionMes, CobroEmpresa, Abono
-import datetime, os.path, csv
+import datetime, os.path, unicodecsv as csv, codecs
 from weasyprint import HTML
 from django.conf import settings
 from wsgiref.util import FileWrapper
@@ -148,7 +148,8 @@ def ReporteEmpresa(request):
 			response = HttpResponse(content_type='text/csv')
 			NombreReporte = "["+EmpresaUsuario.nombre+"]Gestion Operativa "+str_fecha+".csv"
 			response['Content-Disposition'] = 'attachment; filename='+NombreReporte
-			writer = csv.writer(response)
+			response.write(codecs.BOM_UTF8)
+			writer = csv.writer(response,delimiter=',')
 
 			op_mes = OperacionMes.objects.filter(empresa=empresa,mes=fecha[1],anio=fecha[0])
 			Precio_Total = 0
