@@ -50,7 +50,7 @@ def sistema_reporte(request):
 				Total_Pago = 0
 				Listado_Pagos = None
 				if op_mes.first() is not None:
-					writer.writerow(['Nombre', 'Numero Expediente','No. Tenencias','Total a Pagar Q','Fecha Ingreso Oficina','Fecha Ingreso Digecam','Fecha Cita','Fecha Pago','Fecha Entrega','Quien Entrego','Quien Recibio','Estatus','cobros','Descripcion Estado'])
+					writer.writerow(['Nombre', 'Numero Expediente','Numero Autenticas Fimra','No. Tenencias','Total a Pagar Q','Fecha Ingreso Oficina','Fecha Ingreso Digecam','Fecha Cita','Fecha Pago','Fecha Entrega','Quien Entrego','Quien Recibio','Estatus','cobros','Descripcion Estado'])
 					#writer.writerow(['Numero Expediente','Nombre','Fecha Ingreso Oficina','Fecha Entrega','Estatus','cobros','Total a Pagar Q'])
 					listado = Expediente.objects.all().filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
 					listprecio = []
@@ -69,7 +69,7 @@ def sistema_reporte(request):
 									precio += temp.first().precio * ex.autenticafirma
 								else:
 									precio += temp.first().precio
-						writer.writerow([ex.cliente, ex.numeroexpe,ex.tenencias,precio,ex.fecha_ingreso_oficina,ex.fecha_ingreso_digecam,ex.fecha_cita,ex.fecha_pago,ex.fecha_entrega,ex.entrego,ex.recibio,ex.estatus,CobroDescripcion,ex.descripcion_estatus])
+						writer.writerow([ex.cliente, ex.numeroexpe,ex.tenencias,ex.autenticafirma,precio,ex.fecha_ingreso_oficina,ex.fecha_ingreso_digecam,ex.fecha_cita,ex.fecha_pago,ex.fecha_entrega,ex.entrego,ex.recibio,ex.estatus,CobroDescripcion,ex.descripcion_estatus])
 						#writer.writerow([ex.numeroexpe,ex.cliente,ex.fecha_ingreso_oficina,ex.fecha_entrega,ex.estatus,CobroDescripcion,precio])
 						#Precio_Total += precio
 						#listprecio.append([ex,precio])
@@ -204,7 +204,7 @@ def ReporteEmpresa(request):
 			Listado_Pagos = None
 			if op_mes.first() is not None:
 				#writer.writerow(['Nombre', 'Numero Expediente','No. Tenencias','Total a Pagar Q','Fecha Ingreso Oficina','Fecha Ingreso Digecam','Fecha Cita','Fecha Pago','Fecha Entrega','Quien Entrego','Quien Recibio','Estatus','cobros','Descripcion Estado'])
-				writer.writerow(['Numero Expediente','Nombre','Fecha Ingreso Oficina','Fecha Entrega','Estatus','cobros','Total a Pagar Q'])
+				writer.writerow(['Numero Expediente','Nombre','Fecha Ingreso Oficina','Fecha Entrega','Estatus','No. Tenencias', 'No. Autentica Firma','cobros','Total a Pagar Q'])
 				listado = Expediente.objects.all().filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
 				listprecio = []
 				for ex in listado:
@@ -223,7 +223,7 @@ def ReporteEmpresa(request):
 							else:
 								precio += temp.first().precio
 					#writer.writerow([ex.cliente, ex.numeroexpe,ex.tenencias,precio,ex.fecha_ingreso_oficina,ex.fecha_ingreso_digecam,ex.fecha_cita,ex.fecha_pago,ex.fecha_entrega,ex.entrego,ex.recibio,ex.estatus,CobroDescripcion,ex.descripcion_estatus])
-					writer.writerow([ex.numeroexpe,ex.cliente,ex.fecha_ingreso_oficina,ex.fecha_entrega,ex.estatus,CobroDescripcion,precio])
+					writer.writerow([ex.numeroexpe,ex.cliente,ex.fecha_ingreso_oficina,ex.fecha_entrega,ex.estatus,ex.tenencias,ex.autenticafirma,CobroDescripcion,precio])
 					#Precio_Total += precio
 					#listprecio.append([ex,precio])
 					#Listado_Pagos = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
