@@ -5,6 +5,42 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
         
+    <style>
+#Reporte {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#Reporte td, #Reporte th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#Reporte tr:nth-child(even){background-color: #f2f2f2;}
+
+#Reporte tr:hover {background-color: #ddd;}
+
+#Reporte th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: black;
+    color: white;
+}
+
+#Encabezado th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: black;
+    color: white;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+
+</style>
   </head>
 
   <body > 
@@ -12,12 +48,25 @@
 <h1 >
 
   {% if key_reporte_uno %}
-  	<h1 style="text-align: center;">Detalle De Expedientes De {{ Empresa }} De {{ fecha }}  </h1>
-    
+
+    <h1 style="text-align: center;">Espaderos &amp; Azurdia</h1>
     <br>
-    
-    <h3><b>Total Deuda: </b> {{ Precio_Total }}</h3>
-    <h3><b>Total Abonado: </b> {% if Total_Pago.monto__sum %} {{ Total_Pago.monto__sum }} {% else %} 0 {% endif %}</h3>
+    <table id="Encabezado" style="width: 100%;">
+      <tr>
+        <th>Detalle De Expedientes De {{ Empresa }} De {{ fecha }}</th>
+      </tr>
+    </table>
+
+    <table id="Reporte" style="width: 100%;">
+      <tr>
+        <td>Total Deuda:</td>
+        <td>{{ Precio_Total }}</td>
+      </tr>
+      <tr>
+        <td>Total Abonado:</td>
+        <td>{% if Total_Pago.monto__sum %} {{ Total_Pago.monto__sum }} {% else %} 0 {% endif %}</td>
+      </tr>
+    </table>
 
     <br>
 
@@ -27,39 +76,86 @@
 
   {% for expe in precio %}
 
-  	<p>--------------------------------------------------------------------------------------------------------------------</p>
-      <p style="text-align: justify;">
-        <b>Cliente : </b>  {{expe.0.cliente}} <br>
-        <b>Numero Expediente : </b>  {{expe.0.numeroexpe}} <br>
-        <b># Tenencias : </b> {% if expe.0.tenencias %} {{expe.0.tenencias}} {% else %} -------- {% endif %} <br>
-        <b>Total a cobrar : </b>  {{expe.1}} <br>
-        <b>Empresa : </b> {{expe.0.operacionmes.empresa}} <br>
-        <b>Fecha Ingreso Oficina: </b> {{expe.0.fecha_ingreso_oficina}}  <br>
-        <b>Fecha Ingreso Digecam : </b> {% if expe.0.fecha_ingreso_digecam %}  {{expe.0.fecha_ingreso_digecam}} {% else %} -------- {% endif %} <br>
-        <b>Fecha cita : </b>  {% if expe.0.fecha_cita %} {{expe.0.fecha_cita}} {% else %} -------- {% endif %} <br>
-        <b>Fecha pago : </b>  {% if expe.0.fecha_pago %} {{expe.0.fecha_pago}} {% else %} -------- {% endif %} <br>
-        <b>Fecha entrega : </b>  {% if expe.0.fecha_entrega %}{{expe.0.fecha_entrega}}{% else %} -------- {% endif %} <br>
-        <b>Quien entrego : </b> {% if expe.0.entrego %} {{expe.0.entrego}} {% else %} -------- {% endif %} <br>
-        <b>Quien Recibio : </b> {% if expe.0.recibio %} {{expe.0.recibio}} {% else %} -------- {% endif %} <br>
-        <b>Estatus: </b> {{expe.0.estatus}}     <br>
-        <b>Cobros: </b> {% for c in expe.0.cobro.all %} {{c}},{% endfor %}  <br>
-        <b>Reporte Error:</b>
-          {% if expe.0.docfile.name %}
-            <a target='_blank' href="/pdf/{{expe.0.id}}">archivo</a>
-          {% else %}
-            --------
-          {% endif %}            
-        <br>
-        <b>Descripcion:</b>
-          {% if expe.0.descripcion_estatus %}
-            {{expe.0.descripcion_estatus}}
-          {% else %}
-            --------
-          {% endif %}
-      </p>
+  	<table id="Reporte" style="width: 100%;">
+      <tr>
+        <th>No.{{forloop.counter0}} - Numero Expediente {{expe.0.numeroexpe}}</th>
+        
+      </tr>
+    </table>
+    <table id="Reporte" style="width: 100%;">
+      <tr>
+        <td><b>Cliente : </b></td>
+        <td>{{expe.0.cliente}}</td>
+      </tr>
+      <tr>
+        <td><b>Numero Expediente : </b></td>
+        <td>{{expe.0.numeroexpe}}</td>
+      </tr>
+      <tr>
+        <td><b># Tenencias : </b></td>
+        <td>{% if expe.0.tenencias %} {{expe.0.tenencias}} {% else %} -------- {% endif %}</td>
+      </tr>
+      <tr>
+        <td><b>Total a cobrar : </b></td>
+        <td>{{expe.1}}</td>
+      </tr>
+      <tr>
+        <td><b>Empresa : </b></td>
+        <td>{{expe.0.operacionmes.empresa}}</td>
+      </tr>
+      <tr>
+        <td><b>Fecha Ingreso Oficina: </b></td>
+        <td>{{expe.0.fecha_ingreso_oficina}}</td>
+      </tr>
+      <tr>
+        <td><b>Fecha Ingreso Digecam : </b></td>
+        <td>{% if expe.0.fecha_ingreso_digecam %}  {{expe.0.fecha_ingreso_digecam}} {% else %} -------- {% endif %} </td>
+      </tr>
+      <tr>
+        <td><b>Fecha cita : </b></td>
+        <td>{% if expe.0.fecha_cita %} {{expe.0.fecha_cita}} {% else %} -------- {% endif %}</td>
+      </tr>
+      <tr>
+        <td><b>Fecha pago : </b></td>
+        <td>{% if expe.0.fecha_pago %} {{expe.0.fecha_pago}} {% else %} -------- {% endif %}</td>
+      </tr>
+      <tr>
+        <td><b>Fecha entrega : </b></td>
+        <td>{% if expe.0.fecha_entrega %}{{expe.0.fecha_entrega}}{% else %} -------- {% endif %}</td>
+      </tr>
+      <tr>
+        <td><b>Quien entrego : </b></td>
+        <td>{% if expe.0.entrego %} {{expe.0.entrego}} {% else %} -------- {% endif %}</td>
+      </tr>
+      <tr>
+        <td><b>Quien Recibio : </b>  </td>
+        <td>{% if expe.0.recibio %} {{expe.0.recibio}} {% else %} -------- {% endif %}</td>
+      </tr>
+      <tr>
+        <td><b>Estatus: </b></td>
+        <td>{{expe.0.estatus}}</td>
+      </tr>
+      <tr>
+        <td><b>Cobros: </b></td>
+        <td>{% for c in expe.0.cobro.all %} {{c}},{% endfor %}</td>
+      </tr>
+      <tr>
+        <td><b>Descripcion:</b></td>
+        <td>
+            {% if expe.0.descripcion_estatus %}
+              {{expe.0.descripcion_estatus}}
+            {% else %}
+              --------
+            {% endif %}
+          </td>
+      </tr>
+    </table>
+
+    <br>
 
     {% endfor %}
-     <br><br>
+     <br>
+
     <p>******************************************************************************</p>
     <p>-------------------------------------------------- ABONOS -------------------------------------------------</p>
     <p>******************************************************************************</p>
@@ -67,45 +163,91 @@
     <br>
 
     {% for Abono in Listado_Pagos %}
-    <p>--------------------------------------------------------------------------------------------------------------</p>
-    
-    <b> Monto: </b>  {{ Abono.monto }} <br>
-    <b> Fecha Recibido: </b>  {{ Abono.fecha }} <br>
-    <b> Banco: </b>  {{ Abono.banco }} <br>
-    <b> Tipo De Abono: </b>  {{ Abono.btipo }} <br>
-    <b> Quien Recibio: </b>  {{ Abono.recibio }} <br>
-    <b> Codigo Abono: </b>  {{ Abono.codigo }} <br>
-    <b> Fecha Deposito: </b>  {{ Abono.fechadeposito }} <br>
-    <b> Codigo Del Deposito: </b>  {{ Abono.codigodeposito }} <br>
+
+    <table id="Reporte" style="width: 100%;">
+      <tr>
+        <th>No.{{forloop.counter0}} - Codigo {{ Abono.codigo }}</th>
+      </tr>
+    </table>
+    <table id="Reporte" style="width: 100%;">
+      <tr>
+        <td><b> Monto: </b></td>
+        <td>{{ Abono.monto }}</td>
+      </tr>
+      <tr>
+        <td><b> Fecha Recibido: </b></td>
+        <td>{{ Abono.fecha }}</td>
+      </tr>
+      <tr>
+        <td><b> Banco: </b></td>
+        <td>{{ Abono.banco }}</td>
+      </tr>
+      <tr>
+        <td><b> Tipo De Abono: </b></td>
+        <td>{{ Abono.tipo }}</td>
+      </tr>
+      <tr>
+        <td><b> Quien Recibio: </b></td>
+        <td>{{ Abono.recibio }}</td>
+      </tr>
+      <tr>
+        <td><b> Codigo Abono: </b></td>
+        <td>{{ Abono.codigo }}</td>
+      </tr>
+      <tr>
+        <td><b> Fecha Deposito: </b></td>
+        <td>{{ Abono.fechadeposito }}</td>
+      </tr>
+      <tr>
+        <td><b> Codigo Del Deposito: </b></td>
+        <td>{{ Abono.codigodeposito }}</td>
+      </tr>
+    </table>
+
+    <br>
 
     {% endfor %}
   
   {% elif key_reporte_dos %}
 
-    <h1 style="text-align: center;">Detalle General Operativo De {{ fecha }}  </h1>
+    <h1 style="text-align: center;">Espaderos &amp; Azurdia</h1>
+    <br>
+    <table id="Encabezado" style="width: 100%;">
+      <tr>
+        <th>Detalle General Operativo De {{ fecha }}</th>
+      </tr>
+    </table>
+
+    <table id="Reporte" style="width: 100%;">
+      <tr>
+        <td>Total Ingresos A Percibir En El Mes:</td>
+        <td>{{ Ingresos }}</td>
+      </tr>
+      <tr>
+        <td>Total Ingresos Hasta La Fecha:</td>
+        <td>{{ TIA }}</td>
+      </tr>
+      <tr>
+        <td>Saldo General:</td>
+        <td>{{ Saldo_General }}</td>
+      </tr>
+    </table>
     
     <br>
-    
-    <h3><b>Total Ingresos A Percibir En El Mes: </b> <a style="color:red;"> {{ Ingresos }} </a></h3>
-    <h3><b>Total Ingresos Hasta La Fecha: </b> <a style="color:red;"> {{ TIA }} </a></h3>
-    <h3><b>Saldo General: </b> <a style="color:red;"> {{ Saldo_General }} </a></h3>
-    * Del Mes Operativo Actual
-
-    <br><br>
-
-    <table style=" border: 1px solid black; width:100%">
+    <h4 style="text-align: center;">Detallado</h4>
+    <table id="Reporte">
           <tr>
-              <th style="border: 1px solid black; text-align: center;">EMPRESA</th>
-              <th style="border: 1px solid black; text-align: center;">TOTAL DEUDA</th>
-              <th style="border: 1px solid black; text-align: center;">TOTAL ABONADO</th>
-              <th style="border: 1px solid black; text-align: center;">SALDO</th>
+            <th>Empresa</th>
+            <th>Total Deuda</th>
+            <th>Total Abonado</th>
+            <th>Saldo</th>
           </tr>
         {% for expe in Listageneral %}
           <tr>
-            <td style="border: 1px solid black; text-align: center;">{{expe.0}}</td>
-            <td style="border: 1px solid black; text-align: center;">{{expe.1}}</td>
-            <td style="border: 1px solid black; text-align: center;">{{expe.2}}</td>
-            <td style="border: 1px solid black; text-align: center;">{{expe.3}}</td>
+            <td>{{expe.0}}</td>
+            <td>{{expe.1}}</td>
+            <td>{{expe.2}}</td>
+            <td>{{expe.3}}</td>
           </tr>
         {% endfor %}
       </table>  	

@@ -1,0 +1,38 @@
+{% extends 'sistema/base/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="row white" style="margin-bottom: 0px;">
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="row white" >
+      
+      <div class="center blue-grey darken-3 s12 l12 white-text">
+        <h4 >
+          Eliminar Abono: {{ abono.codigo }}
+        </h4>  
+      </div>
+      <br>
+     <div class="row">
+      <div class="row col l3 offset-l3 s12">
+        <a class=" col l12 s12 btn-large waves-effect waves-light lime white-text z-depth-4 " href="/form_pago/">
+          Cancelar
+        </a>
+      </div>
+      <div class="row col l3 s12">
+        <button class=" col l12 s12 btn-large waves-effect waves-light red white-text z-depth-4 " type="sumit">
+          Eliminar
+        </button>
+      </div>  
+     </div>
+     
+    </div>
+
+  </form>
+
+</div>
+
+
+{% endblock content %}

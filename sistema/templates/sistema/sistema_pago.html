@@ -46,6 +46,9 @@
               <th>Codigo Del Deposito</th>
               <th>Fecha Deposito</th>
               <th>Editar</th>
+              {% if user.get_username == 'administrador' %}
+              <th>Eliminar</th>
+              {% endif %}
           </tr>
         </thead>
 
@@ -67,6 +70,13 @@
                 <i class="material-icons  black-text">mode_edit</i>
               </a>
             </td>
+             {% if user.get_username == 'administrador' %}
+            <td>
+              <a class="btn col l6 s8 waves-effect waves-light black white-text z-depth-1" href='/eliminar_pago/{{pago.id}}/'>
+                <i class="material-icons  white-text">delete</i>
+              </a>
+            </td>
+            {% endif %}
           </tr>
           {% endfor %}
         </tbody>

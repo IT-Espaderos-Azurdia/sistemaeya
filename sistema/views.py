@@ -28,6 +28,7 @@ def sistema_reporte(request):
 	if request.method == 'POST':
 		reporte = request.POST.get("reporte","")
 		empresa = request.POST.get("empresa","")
+		excel = request.POST.get("Excel", False)
 		str_fecha = request.POST.get("fecha","")
 		fecha = str_fecha.split('-',1)
 		Nombre_empresa = Empresa.objects.only('nombre').get(id=empresa)
@@ -36,30 +37,74 @@ def sistema_reporte(request):
 		Total_Pago = 0
 		Listado_Pagos = None
 		if reporte == '0':
-			if op_mes.first() is not None:
-				listado = Expediente.objects.all().filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
-				listprecio = []
+			
+			if excel:
+				response = HttpResponse(content_type='text/csv')
+				NombreReporte = "["+Nombre_empresa.nombre+"]Gestion Operativa "+str_fecha+".csv"
+				response['Content-Disposition'] = 'attachment; filename='+NombreReporte
+				response.write(codecs.BOM_UTF8)
+				writer = csv.writer(response,delimiter=',')
 
-				for ex in listado:
-					empresa = ex.operacionmes.empresa.id
-					cobros = ex.cobro.all()
-					precio = 0
-					for c in cobros:
-						temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
-						if temp.first() is not None:
-							if 'tenencia' in c.nombre.lower():
-								precio += temp.first().precio * ex.tenencias
-							else:
-								precio += temp.first().precio
-					Precio_Total += precio
-					listprecio.append([ex,precio])
-					Listado_Pagos = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
-					Total_Pago = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1]).aggregate(Sum('monto'))
-
-				context2 = {'fecha':str_fecha,'Empresa':Nombre_empresa,'key_reporte_uno':True,'key_reporte_dos':False,'listado':listado,'precio':listprecio,'Precio_Total':Precio_Total,'Listado_Pagos':Listado_Pagos,'Total_Pago':Total_Pago}
-				
+				op_mes = OperacionMes.objects.filter(empresa=empresa,mes=fecha[1],anio=fecha[0])
+				Precio_Total = 0
+				Total_Pago = 0
+				Listado_Pagos = None
+				if op_mes.first() is not None:
+					writer.writerow(['Nombre', 'Numero Expediente','No. Tenencias','Total a Pagar Q','Fecha Ingreso Oficina','Fecha Ingreso Digecam','Fecha Cita','Fecha Pago','Fecha Entrega','Quien Entrego','Quien Recibio','Estatus','cobros','Descripcion Estado'])
+					#writer.writerow(['Numero Expediente','Nombre','Fecha Ingreso Oficina','Fecha Entrega','Estatus','cobros','Total a Pagar Q'])
+					listado = Expediente.objects.all().filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+					listprecio = []
+					for ex in listado:
+						empresa = ex.operacionmes.empresa.id
+						cobros = ex.cobro.all()
+						precio = 0
+						CobroDescripcion = "-"
+						for c in cobros:
+							CobroDescripcion += c.nombre+"-"
+							temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
+							if temp.first() is not None:
+								if 'tenencia' in c.nombre.lower():
+									precio += temp.first().precio * ex.tenencias
+								elif 'ntica firma' in c.nombre.lower():
+									precio += temp.first().precio * ex.autenticafirma
+								else:
+									precio += temp.first().precio
+						writer.writerow([ex.cliente, ex.numeroexpe,ex.tenencias,precio,ex.fecha_ingreso_oficina,ex.fecha_ingreso_digecam,ex.fecha_cita,ex.fecha_pago,ex.fecha_entrega,ex.entrego,ex.recibio,ex.estatus,CobroDescripcion,ex.descripcion_estatus])
+						#writer.writerow([ex.numeroexpe,ex.cliente,ex.fecha_ingreso_oficina,ex.fecha_entrega,ex.estatus,CobroDescripcion,precio])
+						#Precio_Total += precio
+						#listprecio.append([ex,precio])
+						#Listado_Pagos = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+						#Total_Pago = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1]).aggregate(Sum('monto'))
+					#context2 = {'fecha':str_fecha,'Empresa':Nombre_empresa,'key_reporte_uno':True,'key_reporte_dos':False,'listado':listado,'precio':listprecio,'Precio_Total':Precio_Total,'Listado_Pagos':Listado_Pagos,'Total_Pago':Total_Pago}	
+					return response
 			else:
-				context2 = {'key_reporte_uno':False,'key_reporte_dos':False}
+				if op_mes.first() is not None:
+					listado = Expediente.objects.all().filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+					listprecio = []
+
+					for ex in listado:
+						empresa = ex.operacionmes.empresa.id
+						cobros = ex.cobro.all()
+						precio = 0
+						for c in cobros:
+							temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
+							if temp.first() is not None:
+								if 'tenencia' in c.nombre.lower():
+									precio += temp.first().precio * ex.tenencias
+								elif 'ntica firma' in c.nombre.lower():
+									precio += temp.first().precio * ex.autenticafirma
+								else:
+									precio += temp.first().precio
+						Precio_Total += precio
+						listprecio.append([ex,precio])
+						Listado_Pagos = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+						Total_Pago = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1]).aggregate(Sum('monto'))
+
+					context2 = {'fecha':str_fecha,'Empresa':Nombre_empresa,'key_reporte_uno':True,'key_reporte_dos':False,'listado':listado,'precio':listprecio,'Precio_Total':Precio_Total,'Listado_Pagos':Listado_Pagos,'Total_Pago':Total_Pago}
+					
+				else:
+					context2 = {'key_reporte_uno':False,'key_reporte_dos':False}
+
 		else:
 			Total_Ingresos = 0
 			Total_Ingresos_Acutal = 0
@@ -81,6 +126,8 @@ def sistema_reporte(request):
 						if temp.first() is not None:
 							if 'tenencia' in c.nombre.lower():
 								precio += temp.first().precio * ex.tenencias
+							elif 'ntica firma' in c.nombre.lower():
+								precio += temp.first().precio * ex.autenticafirma
 							else:
 								precio += temp.first().precio
 					Precio_Total += precio
@@ -171,6 +218,8 @@ def ReporteEmpresa(request):
 						if temp.first() is not None:
 							if 'tenencia' in c.nombre.lower():
 								precio += temp.first().precio * ex.tenencias
+							elif 'ntica firma' in c.nombre.lower():
+								precio += temp.first().precio * ex.autenticafirma
 							else:
 								precio += temp.first().precio
 					#writer.writerow([ex.cliente, ex.numeroexpe,ex.tenencias,precio,ex.fecha_ingreso_oficina,ex.fecha_ingreso_digecam,ex.fecha_cita,ex.fecha_pago,ex.fecha_entrega,ex.entrego,ex.recibio,ex.estatus,CobroDescripcion,ex.descripcion_estatus])
@@ -228,8 +277,8 @@ def sistema(request):
 				if temp.first() is not None:
 					if 'tenencia' in c.nombre.lower():
 						precio += temp.first().precio * ex.tenencias
-				#	elif 'firma' in c.nombre.lower():
-				#		precio += temp.first().precio * ex.autenticafirma
+					elif 'ntica firma' in c.nombre.lower():
+						precio += temp.first().precio * ex.autenticafirma
 				#	elif 'dpi' in c.nombre.lower():
 				#		precio += temp.first().precio * ex.autenticadpi
 				#	elif 'ingresos' in c.nombre.lower():
@@ -279,8 +328,8 @@ def ExpedienteEmpresa(request):
 				if temp.first() is not None:
 					if 'tenencia' in c.nombre.lower():
 						precio += temp.first().precio * ex.tenencias
-				#	elif 'firma' in c.nombre.lower():
-				#		precio += temp.first().precio * ex.autenticafirma
+					elif 'ntica firma' in c.nombre.lower():
+						precio += temp.first().precio * ex.autenticafirma
 				#	elif 'dpi' in c.nombre.lower():
 				#		precio += temp.first().precio * ex.autenticadpi
 				#	elif 'ingresos' in c.nombre.lower():
@@ -306,6 +355,20 @@ def sistema_pago(request):
 		return render(request,template,context)
 	else:
 		return render(request,template)
+
+# Funcion Eliminar Pago
+def eliminar_pago(request,id_pago):
+	if Abono.objects.all().filter(id=id_pago).exists():
+		abono = Abono.objects.get(id=id_pago)
+		if request.method == 'POST':
+			abono.delete()
+			return redirect('sistema')
+		template = "sistema/eliminar/abono.html"
+		context = {'abono':abono}
+		return render(request,template,context)
+	else:
+		return redirect('sistema')
+
 
 def dowload_File(request,id_expediente):
 	expediente = Expediente.objects.get(id=id_expediente)

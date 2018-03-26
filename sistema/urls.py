@@ -26,6 +26,7 @@ urlpatterns = [
 
 	url(r'^form_pago/$', login_required(views.form_pago), name='form_pago'),
 	url(r'^editar_pago/(?P<id_pago>\d+)/$', login_required(views.update_pago), name='update_pago'),
+	url(r'^eliminar_pago/(?P<id_pago>\d+)/$', login_required(views.eliminar_pago), name='eliminar_pago'),
 
 	url(r'^form_expediente/$', login_required(views.form_expediente), name='form_expediente'),
 	url(r'^editar_expediente/(?P<id_expediente>\d+)/$', login_required(views.update_expediente), name='update_expediente'),

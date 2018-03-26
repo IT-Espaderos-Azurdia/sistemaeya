@@ -109,6 +109,7 @@
         <b>Cliente : </b>  {{expe.0.cliente}} <br>
         <b>Numero Expediente : </b>  {{expe.0.numeroexpe}} <br>
         <b># Tenencias : </b> {% if expe.0.tenencias %} {{expe.0.tenencias}} {% else %} -------- {% endif %} <br>
+        <b># Autenticas De Firma : </b> {% if expe.0.autenticafirma %} {{expe.0.autenticafirma}} {% else %} -------- {% endif %} <br>
         <b>Total a cobrar : </b>  {{expe.1}} <br>
         <b>Empresa : </b> {{expe.0.operacionmes.empresa}} <br>
         <b>Fecha Ingreso Oficina: </b> {{expe.0.fecha_ingreso_oficina}}  <br>

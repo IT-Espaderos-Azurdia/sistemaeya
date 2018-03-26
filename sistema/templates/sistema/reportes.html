@@ -19,7 +19,7 @@
 
       <div class="col s12 l12 ">
 
-        <div class="row input-field col  s12 l4">
+        <div class="row input-field col  s12 l3">
           <select id="reporte" name="reporte" required="required">
             {% for reporte in reportes %}
               <option value="{{forloop.counter0}}">{{reporte}}</option>
@@ -41,6 +41,13 @@
           </select>
           <label>Seleccionar Empresa</label>
         </div>
+
+        <div class="row col  s12 l1">
+          <br>
+          <input  name="Excel" id="Excel" type="checkbox" />
+          <label for="Excel">Excel</label>
+        </div>
+         
 
         <br>
         <button class="btn col l2 s12 waves-effect waves-light pink white-text z-depth-1" formtarget='_blank' type="submit">

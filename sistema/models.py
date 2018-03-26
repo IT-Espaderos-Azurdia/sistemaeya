@@ -170,7 +170,7 @@ class Expediente(models.Model):
     entrego = models.CharField(null=True,blank=True,max_length=50)
     tenencias = models.PositiveIntegerField(null=True,blank=True)
     #autenticadpi = models.PositiveIntegerField(null=True,blank=True)
-    #autenticafirma = models.PositiveIntegerField(null=True,blank=True)
+    autenticafirma = models.PositiveIntegerField(null=True,blank=True)
     #constanciaingresos = models.PositiveIntegerField(null=True,blank=True)
     #formularios = models.PositiveIntegerField(null=True,blank=True)
     estatus = models.CharField(null=False,blank=False,max_length=10)

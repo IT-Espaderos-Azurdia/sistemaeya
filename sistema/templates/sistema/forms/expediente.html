@@ -40,34 +40,40 @@
         </div>
         {% endif %}
 
-        <div class="row col l8 s12">
+        <div class="row col l12 s12">
           <div class="input-field">
             {{form.cliente}}
             <label for="{{form.cliente.id}}">{{form.cliente.label}}</label>
           </div>          
         </div>
 
-        <div class="row col l2 s12">
+        <div class="row col l3 s12">
           <div class="input-field">
             {{form.estatus}}
             <label for="{{form.estatus.id}}">{{form.estatus.label}}</label>
           </div>          
         </div>
 
-        <div class="row col l2 s12">
+        <div class="row col l3 s12">
           <div class="input-field">
             {{form.numeroexpe}}
             <label for="{{form.numeroexpe.id}}">{{form.numeroexpe.label}}</label>
           </div>          
         </div>
 
-        <div class="row col l2 s12">
+        <div class="row col l3 s12">
           <div class="input-field">
             {{form.tenencias}}
             <label for="{{form.tenencias.id}}">{{form.tenencias.label}}</label>
           </div>          
         </div>
 
+        <div class="row col l3 s12">
+          <div class="input-field">
+            {{form.autenticafirma}}
+            <label for="{{form.autenticafirma.id}}">{{form.autenticafirma.label}}</label>
+          </div>          
+        </div>
         
 <!--
         <div class="row col l4 s12">
@@ -77,12 +83,7 @@
           </div>          
         </div>
 
-        <div class="row col l4 s12">
-          <div class="input-field">
-            {{form.autenticafirma}}
-            <label for="{{form.autenticafirma.id}}">{{form.autenticafirma.label}}</label>
-          </div>          
-        </div>
+        
 
         <div class="row col l6 s12">
           <div class="input-field">
@@ -98,12 +99,12 @@
           </div>          
         </div>
 -->
-        <div class="row col l5 s12">
+        <div class="row col l6 s12">
           <label >{{form.fecha_ingreso_oficina.label}}</label>
           {{form.fecha_ingreso_oficina}}            
         </div>
 
-        <div class="row col l5 s12">
+        <div class="row col l6 s12">
           <label >{{form.fecha_ingreso_digecam.label}}</label>
           {{form.fecha_ingreso_digecam}}            
         </div>
