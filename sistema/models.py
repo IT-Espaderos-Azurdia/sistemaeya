@@ -115,6 +115,7 @@ class DjangoSession(models.Model):
 
 class Cobro(models.Model):
     nombre = models.CharField(max_length=100)
+    mostrar = models.BooleanField(default=False)
 
     def __str__(self):
         return '{}'.format(self.nombre)
@@ -177,6 +178,10 @@ class Expediente(models.Model):
     descripcion_estatus = models.CharField(null=True,blank=True,max_length=200)
     docfile = models.FileField(upload_to='archivos/',null=True,blank=True)
     numeroexpe = models.PositiveIntegerField(null=True,blank=True) #Numero Expediente
+    #Agregados al expediente Oct 2018
+    esta_pagado = models.BooleanField(default=False)
+    esta_entregado = models.BooleanField(default=False)
+    fecha_entregado = models.DateField(null=True,blank=True)
 
 
 

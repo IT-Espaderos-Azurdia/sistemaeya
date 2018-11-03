@@ -25,7 +25,7 @@ SECRET_KEY = '7oe9y9*+k94u9q(z9@_q*elj8pevy=y3@aofl=j(a+u#@l!cv8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['67.205.143.105','127.0.0.1','192.168.0.12','espaderosyazurdia.gt','www.espaderosyazurdia.gt']
+ALLOWED_HOSTS = ['0.0.0.0','67.205.143.105','127.0.0.1','192.168.0.13','espaderosyazurdia.gt','www.espaderosyazurdia.gt']
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sistema',
+    'multiselectfield',
 ]
 
 MIDDLEWARE = [

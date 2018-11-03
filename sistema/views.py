@@ -63,7 +63,7 @@ def sistema_reporte(request):
 							CobroDescripcion += c.nombre+"-"
 							temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
 							if temp.first() is not None:
-								if 'tenencia' in c.nombre.lower():
+								if c.id == 14 : #if 'tenencia' in c.nombre.lower():
 									precio += temp.first().precio * ex.tenencias
 								elif 'ntica firma' in c.nombre.lower():
 									precio += temp.first().precio * ex.autenticafirma
@@ -89,7 +89,7 @@ def sistema_reporte(request):
 						for c in cobros:
 							temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
 							if temp.first() is not None:
-								if 'tenencia' in c.nombre.lower():
+								if c.id == 14 : #if 'tenencia' in c.nombre.lower():
 									precio += temp.first().precio * ex.tenencias
 								elif 'ntica firma' in c.nombre.lower():
 									precio += temp.first().precio * ex.autenticafirma
@@ -124,7 +124,7 @@ def sistema_reporte(request):
 					for c in cobros:
 						temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
 						if temp.first() is not None:
-							if 'tenencia' in c.nombre.lower():
+							if c.id == 14 : #if 'tenencia' in c.nombre.lower():
 								precio += temp.first().precio * ex.tenencias
 							elif 'ntica firma' in c.nombre.lower():
 								precio += temp.first().precio * ex.autenticafirma
@@ -216,7 +216,7 @@ def ReporteEmpresa(request):
 						CobroDescripcion += c.nombre+"-"
 						temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
 						if temp.first() is not None:
-							if 'tenencia' in c.nombre.lower():
+							if c.id == 14 : #if 'tenencia' in c.nombre.lower():
 								precio += temp.first().precio * ex.tenencias
 							elif 'ntica firma' in c.nombre.lower():
 								precio += temp.first().precio * ex.autenticafirma
@@ -275,7 +275,7 @@ def sistema(request):
 			for c in cobros:
 				temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
 				if temp.first() is not None:
-					if 'tenencia' in c.nombre.lower():
+					if c.id == 14 : #if 'tenencia' in c.nombre.lower():
 						precio += temp.first().precio * ex.tenencias
 					elif 'ntica firma' in c.nombre.lower():
 						precio += temp.first().precio * ex.autenticafirma
@@ -326,7 +326,7 @@ def ExpedienteEmpresa(request):
 			for c in cobros:
 				temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
 				if temp.first() is not None:
-					if 'tenencia' in c.nombre.lower():
+					if c.id == 14 : #if 'tenencia' in c.nombre.lower():
 						precio += temp.first().precio * ex.tenencias
 					elif 'ntica firma' in c.nombre.lower():
 						precio += temp.first().precio * ex.autenticafirma
@@ -424,7 +424,9 @@ def form_expediente(request):
 	list_empresa = Empresa.objects.all()
 	Key_empresa = True
 	key_Form = False
-	context = {'form':form,'listado': list_empresa,'key_Form':key_Form,'Key_empresa':Key_empresa}		
+	showmore = Cobro.objects.filter(mostrar=True).values_list('id',flat=True)
+	showmore = list(showmore)
+	context = {'form':form,'listado': list_empresa,'key_Form':key_Form,'Key_empresa':Key_empresa,'showmore':showmore}		
 	return render(request,template,context)	
 
 # Funcion actualizar empresa
@@ -438,7 +440,9 @@ def update_expediente(request,id_expediente):
 			form.save()
 		return redirect('form_expediente')
 	template = "sistema/forms/expediente.html"
-	context = {'form':form,'key_Form':True,'Key_empresa':False}
+	showmore = Cobro.objects.filter(mostrar=True).values_list('id',flat=True)
+	showmore = list(showmore)
+	context = {'form':form,'key_Form':True,'Key_empresa':False,'showmore':showmore}
 	return render(request,template,context)
 
 # Funcion Eliminar Expediente
@@ -566,6 +570,20 @@ def form_cobro(request):
 
 	list_cobro = Cobro.objects.all()
 	context = {'form':form,'listado': list_cobro}		
+	return render(request,template,context)
+
+def update_cobro(request,id_cobro):
+	cobro = Cobro.objects.get(id=id_cobro)
+	if request.method == 'GET':
+		form = CobroForm(instance=cobro)
+	else:
+		form = CobroForm(request.POST,request.FILES,instance=cobro)
+		if form.is_valid():
+			form.save()
+		return redirect('form_cobro')
+	template = "sistema/forms/cobro.html"
+	list_cobro = Cobro.objects.all()
+	context = {'form':form,'listado':list_cobro}
 	return render(request,template,context)
 
 # Funcion eliminar cobro

@@ -79,9 +79,33 @@
   	<table id="Reporte" style="width: 100%;">
       <tr>
         <th>No.{{forloop.counter0}} - Numero Expediente {{expe.0.numeroexpe}}</th>
-        
       </tr>
     </table>
+    
+    {% if expe.0.esta_pagado %}
+      {% if expe.0.esta_entregado %}
+        <table id="Reporte" style="width: 100%;">
+          <tr>
+            <th>CANCELADO Y ENTREGADO</th>
+          </tr>
+        </table>
+      {% else %}
+        <table id="Reporte" style="width: 100%;">
+          <tr>
+            <th>CANCELADO</th>
+          </tr>
+        </table>
+      {% endif %}
+    {% else %}
+      {% if expe.0.esta_entregado %}
+        <table id="Reporte" style="width: 100%;">
+          <tr>
+            <th>ENTREGADO</th>
+          </tr>
+        </table>
+      {% endif %}
+    {% endif %}
+
     <table id="Reporte" style="width: 100%;">
       <tr>
         <td><b>Cliente : </b></td>
@@ -135,6 +159,23 @@
         <td><b>Quien Recibio : </b>  </td>
         <td>{% if expe.0.recibio %} {{expe.0.recibio}} {% else %} -------- {% endif %}</td>
       </tr>
+
+      <!--
+      <tr>
+        <td><b>Pagado : </b>  </td>
+        <td>{% if expe.0.esta_pagado %} SI {% else %} NO {% endif %}</td>
+      </tr>
+
+      <tr>
+        <td><b>Entregado : </b>  </td>
+        <td>{% if expe.0.esta_entregado %} SI {% else %} NO {% endif %}</td>
+      </tr>
+      -->
+      <tr>
+        <td><b>Fecha Previo :</b>  </td>
+        <td>{% if expe.0.fecha_entregado %}{{expe.0.fecha_entregado}}{% else %} -------- {% endif %}</td>
+      </tr>
+
       <tr>
         <td><b>Estatus: </b></td>
         <td>{{expe.0.estatus}}</td>

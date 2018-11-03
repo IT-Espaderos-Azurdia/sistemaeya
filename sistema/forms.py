@@ -1,5 +1,6 @@
 from django import forms
 from sistema.models import Cobro, Empresa, CobroEmpresa, Abono, Expediente
+from multiselectfield import MultiSelectField
 
 class ExpedienteForm(forms.ModelForm):
 
@@ -25,6 +26,9 @@ class ExpedienteForm(forms.ModelForm):
 		    'docfile',
 		    'cliente',
 		    'numeroexpe',
+		    'esta_pagado',
+		    'esta_entregado',
+		    'fecha_entregado',
 		]
 
 		labels = {
@@ -38,7 +42,7 @@ class ExpedienteForm(forms.ModelForm):
 		    'entrego': 'Quien entrego',
 		    'tenencias': '# Tenencias',
 		    #'autenticadpi': 'Numero Autenticas de DPI',
-		    'autenticafirma': 'Numero Autenticas de Firma',
+		    'autenticafirma': 'Autenticas de Firma',
 		    #'constanciaingresos': 'Numero Constancias de Ingresos',
 		    #'formularios': 'Numero Formularios',
 		    'estatus': 'Estatus',
@@ -46,10 +50,15 @@ class ExpedienteForm(forms.ModelForm):
 		    'docfile': 'Seleccione archivo',
 		    'cliente': 'Nombre cliente',
 		    'numeroexpe': 'Numero Expediente',
+		    'esta_pagado': 'Esta Pagado',
+		    'esta_entregado': 'Esta Entregado',
+		    'fecha_entregado': 'Fecha De Previo',
 		}
 
 		widgets = {
 			'cobro': forms.CheckboxSelectMultiple(),
+			#'cobro': forms.CheckboxSelectMultiple(),#queryset=Cobro.objects.filter(nombre="cuatro")
+			#'cobro': MultiSelectField(choices=Cobro.objects.filter(nombre="cuatro")),
 		    'fecha_ingreso_oficina': forms.DateInput(format='%Y-%m-%d',attrs={'type':'date'}),
 		    'fecha_ingreso_digecam': forms.DateInput(format='%Y-%m-%d',attrs={'type':'date'}),
 		    'fecha_cita': forms.DateInput(format='%Y-%m-%d',attrs={'type':'date'}),
@@ -57,7 +66,8 @@ class ExpedienteForm(forms.ModelForm):
 		    'fecha_entrega': forms.DateInput(format='%Y-%m-%d',attrs={'type':'date'}),
 		    'recibio': forms.TextInput(attrs={'class':'validate'}),
 		    'entrego': forms.TextInput(attrs={'class':'validate'}),
-		    'tenencias': forms.NumberInput(attrs={'class':'validate','value':'1'}),
+		    'tenencias': forms.NumberInput(attrs={'class':'validate','value':'1','onchange':'SetCheckTenencia();'}),
+		    #'cobro': forms.CheckboxSelectMultiple(),
 		    #'autenticadpi': forms.NumberInput(attrs={'class':'validate','value':'1'}),
 		    'autenticafirma': forms.NumberInput(attrs={'class':'validate','value':'1'}),
 		    #'constanciaingresos': forms.NumberInput(attrs={'class':'validate','value':'1'}),
@@ -66,7 +76,12 @@ class ExpedienteForm(forms.ModelForm):
 		    'descripcion_estatus': forms.TextInput(attrs={'class':'validate'}),
 		    'cliente': forms.TextInput(attrs={'class':'validate'}),
 		    'numeroexpe': forms.NumberInput(attrs={'class':'validate'}),
+		    'esta_pagado': forms.CheckboxInput(attrs={'onchange':'SetStyleExpediente();'}),
+		    'esta_entregado': forms.CheckboxInput(attrs={'onchange':'SetStyleExpediente();'}),
+		    'fecha_entregado':forms.DateInput(format='%Y-%m-%d',attrs={'type':'date'}),
 		}
+
+		
 
 class PagoForm(forms.ModelForm):
 
@@ -138,14 +153,17 @@ class CobroForm(forms.ModelForm):
 
 		fields = [
 			'nombre',
+			'mostrar',
 		]
 
 		labels = {
-			'nombre':'Nombre Del Cobro'
+			'nombre':'Nombre Del Cobro',
+			'mostrar':'Mostrar En Formulario'
 		}
 
 		widgets = {
 			'nombre':forms.TextInput(attrs={'class':'validate'}),
+			'mostrar':forms.CheckboxInput(),
 		}
 
 

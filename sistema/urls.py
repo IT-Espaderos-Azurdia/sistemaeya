@@ -40,6 +40,7 @@ urlpatterns = [
 	url(r'^eliminar_empresa/(?P<id_empresa>\d+)/$', login_required(views.eliminar_empresa), name='eliminar_empresa'),
 
 	url(r'^form_cobro/$', login_required(views.form_cobro), name='form_cobro'),
+	url(r'^editar_cobro/(?P<id_cobro>\d+)/$', login_required(views.update_cobro), name='update_cobro'),
 	url(r'^eliminar_cobro/(?P<id_cobro>\d+)/$', login_required(views.eliminar_cobro), name='eliminar_cobro'),
 	
 	url(r'^login/$', login, {'template_name':'sistema/login.html'}, name='login'),

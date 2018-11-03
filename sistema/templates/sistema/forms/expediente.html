@@ -8,23 +8,50 @@
     {% csrf_token %}
     <div class="row white" >
       
-      <div class="center blue-grey darken-3 s12 l12 white-text">
-        <h4 >
+      <div  class="center blue-grey darken-3 s12 l12 white-text">
+        <h4 id="txtSubtitulo" >
           EXPEDIENTE
         </h4>  
       </div>
         
       
       <div class="row col l6 s12">
-        <ul id="id_cobro">
+        <br>
+        <div class="row col l12 s12">
+          <div class="row">
+            {% for check in form.cobro %}
+              {% if check.data.value|add:"0" in showmore %}
+                <p class="col l6 s12">
+                  {{ check.tag }}
+                  <label for="{{check.id_for_label}}">{{check.choice_label}}</label>
+                </p>
+              {% endif %}
+            {% endfor %}  
+          </div>
+          <div class="row">
+            <a class=" col l2 s12 btn waves-effect waves-light lime black-text z-depth-4 " type="button" 
+              onclick="
+                if ($('#CheckExtras').attr('hidden')) {
+                    $('#CheckExtras').removeAttr('hidden');
+                } else {
+                    $('#CheckExtras').attr('hidden','hidden');
+                }
+            ">
+              <i class="material-icons left Medium">unfold_more</i>Ver Mas
+            </a>
+          </div>
+          <div class="row" id="CheckExtras" hidden="hidden">
           {% for check in form.cobro %}
-            <li class="row col l6 s12">
-              {{ check.tag }}  
-              <label for="id_cobro_{{ forloop.counter0}}" >{{check.choice_label}}</label>          
-            </li>
-          {% endfor %}
-        </ul>  
-        
+            {% if check.data.value|add:"0" not in showmore %}
+                <p class="col l6 s12">
+                  {{ check.tag }}
+                  <label for="{{check.id_for_label}}">{{check.choice_label}}</label>
+                </p>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          </div>
       </div>
 
       <div class="row col l6 s12">
@@ -64,6 +91,9 @@
         <div class="row col l3 s12">
           <div class="input-field">
             {{form.tenencias}}
+            {% if form.tenencias.label %}
+
+            {% endif %}
             <label for="{{form.tenencias.id}}">{{form.tenencias.label}}</label>
           </div>          
         </div>
@@ -110,6 +140,26 @@
         </div>
 
         {% if key_Form %}
+
+        <div class="row col l4 s12">
+          <p class="col l12 s12">
+            {{ form.esta_pagado }}
+            <label for="id_esta_pagado">Esta Pagado</label>
+          </p>         
+        </div>
+        
+        <div class="row col l4 s12">
+          <p class="col l12 s12">
+            {{ form.esta_entregado }}
+            <label for="id_esta_entregado">Esta Entregado</label>
+          </p>           
+        </div>
+
+        <div class="row col l4 s12">
+          <label >{{form.fecha_entregado.label}}</label>
+          {{form.fecha_entregado}}            
+        </div>
+
         <div class="row col l6 s12">
           <label >{{form.fecha_cita.label}}</label>
           {{form.fecha_cita}}            
@@ -168,5 +218,7 @@
 
 </div>
 
+
+<script src="{% static 'admin/js/StyleConditions.js' %}"></script>
 
 {% endblock content %}
