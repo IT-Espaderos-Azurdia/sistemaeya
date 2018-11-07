@@ -2,10 +2,10 @@ document.addEventListener('DOMContentLoaded',
 	function(){
 		try{
 			SetStyleExpediente();
-			SetCheckTenencia();	
+			SetCheckAutenticaFirma();	
 		}
 		catch{
-			SetCheckTenencia();		
+			SetCheckAutenticaFirma();		
 		}
 	}
 , false);
@@ -26,28 +26,28 @@ function SetStyleExpediente(){
 
 }
 
-function SetCheckTenencia(){
+function SetCheckAutenticaFirma(){
 
-	var Tenencias = document.getElementById("id_tenencias");	
-	if(Tenencias.value == 0)
+	var AutenticaFirma = document.getElementById("id_autenticafirma");	
+	if(AutenticaFirma.value == 0)
 	{
-		SetCheckTenencias(false);
+		SetCheckAutenticaFirmas(false);
 		/*document.getElementById("id_cobro_4").checked = false;*/
 	}
 	else
 	{
-		SetCheckTenencias(true);
+		SetCheckAutenticaFirmas(true);
 		/*document.getElementById("id_cobro_4").checked = true;*/
 	}
 
 }
 
-function SetCheckTenencias(Valor){
+function SetCheckAutenticaFirmas(Valor){
 
 	for(i =0; i<800; i++)
 	{
 		try{
-			if(document.getElementById("id_cobro_"+i).value == 14){
+			if(document.getElementById("id_cobro_"+i).value == 42){
 				document.getElementById("id_cobro_"+i).checked = Valor;			
 			}
 		}
@@ -56,3 +56,4 @@ function SetCheckTenencias(Valor){
 		}
 	}
 }
+
