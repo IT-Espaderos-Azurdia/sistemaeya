@@ -47,7 +47,7 @@ function SetCheckAutenticaFirmas(Valor){
 	for(i =0; i<800; i++)
 	{
 		try{
-			if(document.getElementById("id_cobro_"+i).value == 42){
+			if(document.getElementById("id_cobro_"+i).value == 7){
 				document.getElementById("id_cobro_"+i).checked = Valor;			
 			}
 		}
