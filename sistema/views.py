@@ -26,26 +26,27 @@ def login(request):
 	return render(request,template)
 
 def sistema_reporte(request):
-	if request.method == 'POST':
-		context2 = {}
-		reporte = request.POST.get("reporte","")
-		empresa = request.POST.get("empresa","")
-		excel = request.POST.get("Excel", False)
-		str_fecha = request.POST.get("fecha","")
-		fecha = str_fecha.split('-',1)
-		Nombre_empresa = Empresa.objects.only('nombre').get(id=empresa)
-		op_mes = OperacionMes.objects.filter(empresa=empresa,mes=fecha[1],anio=fecha[0])
+	try:
+		if request.method == 'POST':
+			context2 = {}
+			reporte = request.POST.get("reporte","")
+			empresa = request.POST.get("empresa","")
+			excel = request.POST.get("Excel", False)
+			str_fecha = request.POST.get("fecha","")
+			fecha = str_fecha.split('-',1)
+			Nombre_empresa = Empresa.objects.only('nombre').get(id=empresa)
+			op_mes = OperacionMes.objects.filter(empresa=empresa,mes=fecha[1],anio=fecha[0])
 
-		Precio_Total = 0
-		Total_Pago = 0
-		Listado_Pagos = None
+			Precio_Total = 0
+			Total_Pago = 0
+			Listado_Pagos = None
 
-		
-
-		if reporte == '0':
 			
-			if excel:
-				try:
+
+			if reporte == '0':
+				
+				if excel:
+
 					response = HttpResponse(content_type='text/csv')
 					NombreReporte = "["+Nombre_empresa.nombre+"]Gestion Operativa "+str_fecha+".csv"
 					response['Content-Disposition'] = 'attachment; filename='+NombreReporte
@@ -84,17 +85,50 @@ def sistema_reporte(request):
 							#Total_Pago = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1]).aggregate(Sum('monto'))
 						#context2 = {'fecha':str_fecha,'Empresa':Nombre_empresa,'key_reporte_uno':True,'key_reporte_dos':False,'listado':listado,'precio':listprecio,'Precio_Total':Precio_Total,'Listado_Pagos':Listado_Pagos,'Total_Pago':Total_Pago}	
 						return response
-				except Exception as e:
-					WriteEyaLog(str(e))
-			else:
-				if op_mes.first() is not None:
-					listado = Expediente.objects.all().filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
-					listprecio = []
+				else:
+					if op_mes.first() is not None:
+						listado = Expediente.objects.all().filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+						listprecio = []
 
+						for ex in listado:
+							empresa = ex.operacionmes.empresa.id
+							cobros = ex.cobro.all()
+							precio = 0
+							for c in cobros:
+								temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
+								if temp.first() is not None:
+									if c.id == 14 : #if 'tenencia' in c.nombre.lower():
+										precio += temp.first().precio * ex.tenencias
+									elif 'ntica firma' in c.nombre.lower():
+										precio += temp.first().precio * ex.autenticafirma
+									else:
+										precio += temp.first().precio
+							Precio_Total += precio
+							listprecio.append([ex,precio])
+							Listado_Pagos = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+							Total_Pago = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1]).aggregate(Sum('monto'))
+
+						context2 = {'fecha':str_fecha,'Empresa':Nombre_empresa,'key_reporte_uno':True,'key_reporte_dos':False,'listado':listado,'precio':listprecio,'Precio_Total':Precio_Total,'Listado_Pagos':Listado_Pagos,'Total_Pago':Total_Pago}
+						
+					else:
+						context2 = {'key_reporte_uno':False,'key_reporte_dos':False}
+
+			else:
+				Total_Ingresos = 0
+				Total_Ingresos_Acutal = 0
+				Saldo_General = 0
+				Listado_empresas = Empresa.objects.all()
+				listgeneral = []
+				for Emp in Listado_empresas:
+					listado = Expediente.objects.all().filter(operacionmes__empresa__id=Emp.id,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
+					precio = 0
+					Precio_Total = 0
+					saldo = 0
 					for ex in listado:
 						empresa = ex.operacionmes.empresa.id
 						cobros = ex.cobro.all()
 						precio = 0
+						saldo = 0
 						for c in cobros:
 							temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
 							if temp.first() is not None:
@@ -105,76 +139,45 @@ def sistema_reporte(request):
 								else:
 									precio += temp.first().precio
 						Precio_Total += precio
-						listprecio.append([ex,precio])
-						Listado_Pagos = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
-						Total_Pago = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1]).aggregate(Sum('monto'))
-
-					context2 = {'fecha':str_fecha,'Empresa':Nombre_empresa,'key_reporte_uno':True,'key_reporte_dos':False,'listado':listado,'precio':listprecio,'Precio_Total':Precio_Total,'Listado_Pagos':Listado_Pagos,'Total_Pago':Total_Pago}
+						T_P = Abono.objects.filter(operacionmes__empresa__id=Emp.id,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1]).aggregate(Sum('monto'))
+						if T_P['monto__sum'] is None:
+							Total_Pago = 0
+						else:
+							Total_Pago = T_P['monto__sum']
+						saldo = Precio_Total - Total_Pago
+					Total_Ingresos += Precio_Total
+					if Total_Pago is None:
+							Total_Pago = 0
+					Total_Ingresos_Acutal += Total_Pago
+					Saldo_General += saldo
 					
-				else:
-					context2 = {'key_reporte_uno':False,'key_reporte_dos':False}
+					listgeneral.append([Emp.nombre,Precio_Total,Total_Pago,saldo])
+					Precio_Total = 0
+					Total_Pago = None
+				context2 = {'Saldo_General':Saldo_General,'Ingresos':Total_Ingresos,'TIA':Total_Ingresos_Acutal,'fecha':str_fecha,'Listageneral':listgeneral,'key_reporte_uno':False,'key_reporte_dos':True}
+
+			html_string = render_to_string('sistema/reportes/reporte_uno.html',context2)
+
+			html = HTML(string=html_string)
+			namefile = "reporte_uno.pdf"
+			html.write_pdf(target=settings.MEDIA_ROOT+'/'+namefile)
+
+			f = open(settings.MEDIA_ROOT+'/'+namefile,"rb")
+			response = HttpResponse(FileWrapper(f), content_type='application/pdf')
+			response ['Content-Disposition'] = 'inline; filename='+os.path.basename(namefile)
+			f.close()
+			return response
 
 		else:
-			Total_Ingresos = 0
-			Total_Ingresos_Acutal = 0
-			Saldo_General = 0
-			Listado_empresas = Empresa.objects.all()
-			listgeneral = []
-			for Emp in Listado_empresas:
-				listado = Expediente.objects.all().filter(operacionmes__empresa__id=Emp.id,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
-				precio = 0
-				Precio_Total = 0
-				saldo = 0
-				for ex in listado:
-					empresa = ex.operacionmes.empresa.id
-					cobros = ex.cobro.all()
-					precio = 0
-					saldo = 0
-					for c in cobros:
-						temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
-						if temp.first() is not None:
-							if c.id == 14 : #if 'tenencia' in c.nombre.lower():
-								precio += temp.first().precio * ex.tenencias
-							elif 'ntica firma' in c.nombre.lower():
-								precio += temp.first().precio * ex.autenticafirma
-							else:
-								precio += temp.first().precio
-					Precio_Total += precio
-					T_P = Abono.objects.filter(operacionmes__empresa__id=Emp.id,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1]).aggregate(Sum('monto'))
-					if T_P['monto__sum'] is None:
-						Total_Pago = 0
-					else:
-						Total_Pago = T_P['monto__sum']
-					saldo = Precio_Total - Total_Pago
-				Total_Ingresos += Precio_Total
-				if Total_Pago is None:
-						Total_Pago = 0
-				Total_Ingresos_Acutal += Total_Pago
-				Saldo_General += saldo
-				
-				listgeneral.append([Emp.nombre,Precio_Total,Total_Pago,saldo])
-				Precio_Total = 0
-				Total_Pago = None
-			context2 = {'Saldo_General':Saldo_General,'Ingresos':Total_Ingresos,'TIA':Total_Ingresos_Acutal,'fecha':str_fecha,'Listageneral':listgeneral,'key_reporte_uno':False,'key_reporte_dos':True}
+			template = 'sistema/reportes.html'
+			reportes = ['Reporte detalle','Reporte general de estado']
+			empresas = Empresa.objects.all()
+			context = {'empresas':empresas,'reportes':reportes}
+			return render(request,template,context)		
+	except Exception as e:
+		WriteEyaLog(str(e))
 
-		html_string = render_to_string('sistema/reportes/reporte_uno.html',context2)
-
-		html = HTML(string=html_string)
-		namefile = "reporte_uno.pdf"
-		html.write_pdf(target=settings.MEDIA_ROOT+'/'+namefile)
-
-		f = open(settings.MEDIA_ROOT+'/'+namefile,"rb")
-		response = HttpResponse(FileWrapper(f), content_type='application/pdf')
-		response ['Content-Disposition'] = 'inline; filename='+os.path.basename(namefile)
-		f.close()
-		return response
-
-	else:
-		template = 'sistema/reportes.html'
-		reportes = ['Reporte detalle','Reporte general de estado']
-		empresas = Empresa.objects.all()
-		context = {'empresas':empresas,'reportes':reportes}
-		return render(request,template,context)
+	
 
 def ReporteEmpresa(request):
 	if request.method == 'POST':
