@@ -27,9 +27,8 @@ def login(request):
 
 def sistema_reporte(request):
 	try:
-		WriteEyaLog("esto es una prueba del log")
 		if request.method == 'POST':
-			context2 = {}
+			context2 = {'key_reporte_uno':False,'key_reporte_dos':False}
 			reporte = request.POST.get("reporte","")
 			empresa = request.POST.get("empresa","")
 			excel = request.POST.get("Excel", False)
@@ -41,8 +40,6 @@ def sistema_reporte(request):
 			Precio_Total = 0
 			Total_Pago = 0
 			Listado_Pagos = None
-
-			
 
 			if reporte == '0':
 				
