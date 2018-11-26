@@ -3,11 +3,12 @@ from django.core.files.storage import FileSystemStorage
 from django.template.loader import render_to_string
 from sistema.forms import CobroForm, EmpresaForm, CobroEmpresaForm, ExpedienteForm, PagoForm
 from sistema.models import Cobro, Empresa, CobroEmpresa, Expediente, OperacionMes, CobroEmpresa, Abono
-import datetime, os.path, unicodecsv as csv, codecs
+import datetime, os.path, unicodecsv as csv, codecs, sys
 from weasyprint import HTML
 from django.conf import settings
 from wsgiref.util import FileWrapper
 from django.db.models import Sum
+
 
 def home(request):
 
@@ -26,6 +27,7 @@ def login(request):
 
 def sistema_reporte(request):
 	if request.method == 'POST':
+		context2 = {}
 		reporte = request.POST.get("reporte","")
 		empresa = request.POST.get("empresa","")
 		excel = request.POST.get("Excel", False)
@@ -33,9 +35,16 @@ def sistema_reporte(request):
 		fecha = str_fecha.split('-',1)
 		Nombre_empresa = Empresa.objects.only('nombre').get(id=empresa)
 		op_mes = OperacionMes.objects.filter(empresa=empresa,mes=fecha[1],anio=fecha[0])
+
 		Precio_Total = 0
 		Total_Pago = 0
 		Listado_Pagos = None
+
+		try:
+			WriteEyaLo("hola")
+		except Exception as e:
+			WriteEyaLog(str(e))
+
 		if reporte == '0':
 			
 			if excel:
@@ -663,3 +672,15 @@ def error_404(request):
 def ErrorAcceso(request):
 	template = "sistema/errores/ErrorAcceso.html"
 	return render(request,template)
+
+def WriteEyaLog(Mensaje):
+	fecha = datetime.date.today().strftime("%Y%m%d")
+	hora = datetime.datetime.today().strftime("%H:%M:%S")
+	f = open("/home/eyaweb/eyalog/"+fecha+".txt","a+")
+	f.write("-------------------------------------------------------------------------------------\r\n")
+	f.write("-------------------------------      "+hora+ "     -----------------------------------\r\n")
+	f.write("-------------------------------------------------------------------------------------\r\n")
+	f.write("\r\n"+Mensaje+"\r\n\r\n")
+	f.write("-------------------------------------------------------------------------------------\r\n\r\n")
+	
+
