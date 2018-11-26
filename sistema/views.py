@@ -27,6 +27,7 @@ def login(request):
 
 def sistema_reporte(request):
 	try:
+		WriteEyaLog("esto es una prueba del log")
 		if request.method == 'POST':
 			context2 = {}
 			reporte = request.POST.get("reporte","")
