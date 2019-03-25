@@ -70,11 +70,11 @@ def sistema_reporte(request):
 								temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
 								if temp.first() is not None:
 									if c.id == 14 : #if 'tenencia' in c.nombre.lower():
-										precio += temp.first().precio * ex.tenencias
+										precio += (temp.first().precio or 0) * (ex.tenencias or 0)
 									elif 'ntica firma' in c.nombre.lower():
-										precio += temp.first().precio * ex.autenticafirma
+										precio += (temp.first().precio or 0) * (ex.autenticafirma or 0)
 									else:
-										precio += temp.first().precio
+										precio += (temp.first().precio or 0)
 							writer.writerow([ex.cliente, ex.numeroexpe,ex.tenencias,ex.autenticafirma,precio,ex.fecha_ingreso_oficina,ex.fecha_ingreso_digecam,ex.fecha_cita,ex.fecha_pago,ex.fecha_entrega,ex.entrego,ex.recibio,ex.estatus,CobroDescripcion,ex.descripcion_estatus])
 							#writer.writerow([ex.numeroexpe,ex.cliente,ex.fecha_ingreso_oficina,ex.fecha_entrega,ex.estatus,CobroDescripcion,precio])
 							#Precio_Total += precio
@@ -96,11 +96,11 @@ def sistema_reporte(request):
 								temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
 								if temp.first() is not None:
 									if c.id == 14 : #if 'tenencia' in c.nombre.lower():
-										precio += temp.first().precio * ex.tenencias
+										precio += (temp.first().precio or 0) * (ex.tenencias or 0)
 									elif 'ntica firma' in c.nombre.lower():
-										precio += temp.first().precio * ex.autenticafirma
+										precio += (temp.first().precio or 0) * (ex.autenticafirma or 0)
 									else:
-										precio += temp.first().precio
+										precio += (temp.first().precio or 0)
 							Precio_Total += precio
 							listprecio.append([ex,precio])
 							Listado_Pagos = Abono.objects.filter(operacionmes__empresa__id=empresa,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1])
@@ -131,11 +131,11 @@ def sistema_reporte(request):
 							temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
 							if temp.first() is not None:
 								if c.id == 14 : #if 'tenencia' in c.nombre.lower():
-									precio += temp.first().precio * ex.tenencias
+									precio += (temp.first().precio or 0) * (ex.tenencias or 0)
 								elif 'ntica firma' in c.nombre.lower():
-									precio += temp.first().precio * ex.autenticafirma
+									precio += (temp.first().precio or 0) * (ex.autenticafirma or 0)
 								else:
-									precio += temp.first().precio
+									precio += (temp.first().precio or 0)
 						Precio_Total += precio
 						T_P = Abono.objects.filter(operacionmes__empresa__id=Emp.id,operacionmes__anio=fecha[0],operacionmes__mes=fecha[1]).aggregate(Sum('monto'))
 						if T_P['monto__sum'] is None:
@@ -227,11 +227,11 @@ def ReporteEmpresa(request):
 						temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
 						if temp.first() is not None:
 							if c.id == 14 : #if 'tenencia' in c.nombre.lower():
-								precio += temp.first().precio * ex.tenencias
+								precio += (temp.first().precio or 0) * (ex.tenencias or 0)
 							elif 'ntica firma' in c.nombre.lower():
-								precio += temp.first().precio * ex.autenticafirma
+								precio += (temp.first().precio or 0) * (ex.autenticafirma or 0)
 							else:
-								precio += temp.first().precio
+								precio += (temp.first().precio or 0)
 					#writer.writerow([ex.cliente, ex.numeroexpe,ex.tenencias,precio,ex.fecha_ingreso_oficina,ex.fecha_ingreso_digecam,ex.fecha_cita,ex.fecha_pago,ex.fecha_entrega,ex.entrego,ex.recibio,ex.estatus,CobroDescripcion,ex.descripcion_estatus])
 					writer.writerow([ex.numeroexpe,ex.cliente,ex.fecha_ingreso_oficina,ex.fecha_entrega,ex.estatus,ex.tenencias,ex.autenticafirma,precio,CobroDescripcion])
 					#Precio_Total += precio
@@ -286,9 +286,9 @@ def sistema(request):
 				temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
 				if temp.first() is not None:
 					if c.id == 14 : #if 'tenencia' in c.nombre.lower():
-						precio += temp.first().precio * ex.tenencias
+						precio += (temp.first().precio or 0) * (ex.tenencias or 0)
 					elif 'ntica firma' in c.nombre.lower():
-						precio += temp.first().precio * ex.autenticafirma
+						precio += (temp.first().precio or 0) * (ex.autenticafirma or 0)
 				#	elif 'dpi' in c.nombre.lower():
 				#		precio += temp.first().precio * ex.autenticadpi
 				#	elif 'ingresos' in c.nombre.lower():
@@ -296,7 +296,7 @@ def sistema(request):
 				#	elif 'venta' in c.nombre.lower():
 				#		precio += temp.first().precio * ex.formularios
 					else:
-						precio += temp.first().precio
+						precio += (temp.first().precio or 0)
 			listprecio.append([ex,precio])
 		context = {'listado':listado,'listp':listprecio,'empresas':empresas}
 		return render(request,template,context)
@@ -337,9 +337,9 @@ def ExpedienteEmpresa(request):
 				temp = CobroEmpresa.objects.all().filter(empresa__id=empresa).filter(cobro__id=c.id)
 				if temp.first() is not None:
 					if c.id == 14 : #if 'tenencia' in c.nombre.lower():
-						precio += temp.first().precio * ex.tenencias
+						precio += (temp.first().precio or 0) * (ex.tenencias or 0)
 					elif 'ntica firma' in c.nombre.lower():
-						precio += temp.first().precio * ex.autenticafirma
+						precio += (temp.first().precio or 0) * (ex.autenticafirma or 0)
 				#	elif 'dpi' in c.nombre.lower():
 				#		precio += temp.first().precio * ex.autenticadpi
 				#	elif 'ingresos' in c.nombre.lower():
@@ -347,7 +347,7 @@ def ExpedienteEmpresa(request):
 				#	elif 'venta' in c.nombre.lower():
 				#		precio += temp.first().precio * ex.formularios
 					else:
-						precio += temp.first().precio
+						precio += (temp.first().precio or 0)
 			listprecio.append([ex,precio])
 		context = {'Error':Error,'listado':listado,'listp':listprecio,'empresas':empresas,'username':usuario,'password':password}
 		return render(request,template,context)
